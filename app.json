@@ -2,7 +2,12 @@
   "expo": {
     "name": "scorte_checker",
     "slug": "scorte_checker",
+    "scheme": "scorte-checker",
     "version": "1.0.0",
+    "orientation": "portrait",
+    "web": {
+      "bundler": "metro"
+    },
     "plugins": [
       [
         "expo-dev-client",
@@ -29,7 +34,15 @@
         }
       ],
       "expo-sqlite",
-      "@morrowdigital/watermelondb-expo-plugin"
-    ]
+      "expo-router",
+      "expo-camera",
+      "@react-native-community/datetimepicker"
+    ],
+    "android": {
+      "package": "com.anonymous.scorte_checker"
+    },
+    "ios": {
+      "bundleIdentifier": "com.anonymous.scorte-checker"
+    }
   }
 }

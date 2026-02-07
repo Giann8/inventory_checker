@@ -26,46 +26,13 @@ const crude_prodotto = ({ prodotto, scorta, onPress }) => {
                 </Text>
             </View>
 
-            {/* Quantità scorte */}
-            {scorta && (
-                <View style={styles.stockInfo}>
-                    <View style={styles.stockRow}>
-                        <Text style={styles.stockLabel}>Totale:</Text>
-                        <Text style={styles.stockValue}>
-                            {scorta.quantitaTotale || 0}
-                        </Text>
-                    </View>
-                    
-                    <View style={styles.stockDetails}>
-                        <View style={styles.stockItem}>
-                            <Text style={styles.stockDetailLabel}>Linea</Text>
-                            <Text style={styles.stockDetailValue}>
-                                {scorta.quantitaInLinea || 0}
-                            </Text>
-                        </View>
-                        
-                        <View style={styles.stockItem}>
-                            <Text style={styles.stockDetailLabel}>Sigillato</Text>
-                            <Text style={styles.stockDetailValue}>
-                                {scorta.quantitaInMagazzinoSigillato || 0}
-                            </Text>
-                        </View>
-                        
-                        <View style={styles.stockItem}>
-                            <Text style={styles.stockDetailLabel}>Aperto</Text>
-                            <Text style={styles.stockDetailValue}>
-                                {scorta.quantitaInMagazzinoAperto || 0}
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-            )}
+            
 
             {/* Footer con data ultimo aggiornamento */}
-            {scorta?.date && (
+            {scorta?.createdAt && (
                 <View style={styles.footer}>
                     <Text style={styles.lastUpdate}>
-                        Agg: {new Date(scorta.date).toLocaleDateString('it-IT')}
+                        Agg: {new Date(scorta.createdAt).toLocaleDateString('it-IT')}
                     </Text>
                 </View>
             )}
@@ -77,9 +44,9 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: '#fff',
         borderRadius: 12,
-        padding: 16,
-        marginVertical: 6,
-        marginHorizontal: 16,
+        padding: 12,
+        marginVertical: 4,
+        marginHorizontal: 4,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -90,18 +57,19 @@ const styles = StyleSheet.create({
         elevation: 5, // Android shadow
         borderWidth: 1,
         borderColor: '#f0f0f0',
+        flex: 1,
     },
     header: {
-        marginBottom: 12,
+        marginBottom: 8,
     },
     productName: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '600',
         color: '#333',
         marginBottom: 4,
     },
     productType: {
-        fontSize: 14,
+        fontSize: 12,
         color: '#666',
         textTransform: 'capitalize',
     },
@@ -158,12 +126,27 @@ const styles = StyleSheet.create({
         color: '#6c757d',
         textAlign: 'right',
     },
+    noStockInfo: {
+        padding: 12,
+        backgroundColor: '#f8f9fa',
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: '#dee2e6',
+        borderStyle: 'dashed',
+        marginBottom: 8,
+    },
+    noStockText: {
+        fontSize: 14,
+        color: '#6c757d',
+        fontStyle: 'italic',
+        textAlign: 'center',
+    },
 });
 
 const enhance = withObservables(['prodotto'], ({ prodotto }) => ({
     prodotto,
     // Puoi aggiungere qui l'osservazione della scorta più recente
-    // scorta: prodotto?.getUltimaScorta() || null,
+     scorta: prodotto?.getUltimaScorta() || null,
 }));
 
 const ProdottoCard = enhance(crude_prodotto);

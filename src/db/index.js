@@ -2,10 +2,11 @@ import { Platform } from 'react-native'
 import { Database } from '@nozbe/watermelondb'
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite'
 
-import Schema from './src/model/schema'
-import migrations from './src/model/migrations'
-import Product from './src/model/product'
-import Scorte from './src/model/scorte'
+import Schema from './schema'
+import migrations from './migrations'
+import Product from '../model/product'
+import Scorte from '../model/scorte'
+import PesoStandard from '../model/peso_standard'
 
 // First, create the adapter to the underlying database:
 const adapter = new SQLiteAdapter({
@@ -28,7 +29,8 @@ const database = new Database({
     adapter,
     modelClasses: [
         Product,
-        Scorte
+        Scorte,
+        PesoStandard
     ],
 })
 

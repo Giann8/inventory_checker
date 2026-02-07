@@ -25,19 +25,18 @@ export default appSchema({
                 { name: "quantita_in_magazzino_sigillato", type: "number" },
                 { name: "quantita_in_magazzino_aperto", type: "number" },
                 { name: "quantita_totale", type: "number" },
-                { name: "date", type: "number" },
+                { name: "quantita_scarto", type: "number" },
                 { name: "created_at", type: "number" },
                 { name: "updated_at", type: "number" }
             ]
         }),
         tableSchema({
-            name: "peso_standard",
+            name: "pesi_standard",
             columns: [
                 { name: "product_id", type: "string", isIndexed: true },
                 { name: "peso", type: "number" },
                 { name: "descrizione", type: "string" },
-                { name: "is_default", type: "boolean" },
-                { name: "attivo", type: "boolean" }
+                { name: "is_default", type: "boolean" }
             ]
         })
     ]
