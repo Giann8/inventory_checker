@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import BarcodeReader from './barcode_reader';
+import { BarcodeScanner } from '../utils/BarcodeScanner';
 
 interface VociInputProps {
     titolo: string;
@@ -31,20 +32,7 @@ const VociInput: React.FC<VociInputProps> = ({
     };
 
     const handleBarcodeScanned = (data: string, type: string) => {
-        console.log(`Barcode type: ${type}, data: ${data}`);
-        
-        // Estrai il peso dal barcode se presente
-        // Formati comuni: EAN-13 con peso (es: 2XXXXWWWWWC dove W è il peso)
-        let peso = '';
-        
-        if (data.length === 13 && data.startsWith('2')) {
-            // EAN-13 con peso variabile: formato 2PPPPPWWWWWC
-            // WWWWW = peso (5 cifre) - usato direttamente
-            const pesoValore = parseInt(data.substring(7, 12));
-            if (!isNaN(pesoValore)) {
-                peso = pesoValore.toString();
-            }
-        }
+        const peso = BarcodeScanner.decode(data, type);
         
         if (currentIndex !== null && peso) {
             onAggiorna(currentIndex, 'peso', peso);
