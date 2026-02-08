@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import BarcodeReader from './barcode_reader';
 
 interface VociInputProps {
     titolo: string;
@@ -21,6 +22,41 @@ const VociInput: React.FC<VociInputProps> = ({
     totale,
     icon
 }) => {
+    const [showBarcodeModal, setShowBarcodeModal] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState<number | null>(null);
+
+    const openBarcodeScanner = (index: number) => {
+        setCurrentIndex(index);
+        setShowBarcodeModal(true);
+    };
+
+    const handleBarcodeScanned = (data: string, type: string) => {
+        console.log(`Barcode type: ${type}, data: ${data}`);
+        
+        // Estrai il peso dal barcode se presente
+        // Formati comuni: EAN-13 con peso (es: 2XXXXWWWWWC dove W è il peso)
+        let peso = '';
+        
+        if (data.length === 13 && data.startsWith('2')) {
+            // EAN-13 con peso variabile: formato 2PPPPPWWWWWC
+            // WWWWW = peso (5 cifre) - usato direttamente
+            const pesoValore = parseInt(data.substring(7, 12));
+            if (!isNaN(pesoValore)) {
+                peso = pesoValore.toString();
+            }
+        }
+        
+        if (currentIndex !== null && peso) {
+            onAggiorna(currentIndex, 'peso', peso);
+        }
+        
+        // Chiudi il modal dopo 1.5 secondi
+        setTimeout(() => {
+            setShowBarcodeModal(false);
+            setCurrentIndex(null);
+        }, 1500);
+    };
+
     return (
         <View style={styles.vociContainer}>
             <View style={styles.vociHeader}>
@@ -53,14 +89,22 @@ const VociInput: React.FC<VociInputProps> = ({
                             
                             <View style={styles.inputWrapper}>
                                 <Text style={styles.inputLabel}>Peso</Text>
-                                <TextInput
-                                    style={[styles.input, styles.inputSmall]}
-                                    value={voce.peso}
-                                    onChangeText={(val) => onAggiorna(index, 'peso', val)}
-                                    keyboardType="decimal-pad"
-                                    placeholder="0"
-                                    placeholderTextColor="#999"
-                                />
+                                <View style={styles.pesoInputRow}>
+                                    <TextInput
+                                        style={[styles.input, styles.inputSmall, styles.pesoInput]}
+                                        value={voce.peso}
+                                        onChangeText={(val) => onAggiorna(index, 'peso', val)}
+                                        keyboardType="decimal-pad"
+                                        placeholder="0"
+                                        placeholderTextColor="#999"
+                                    />
+                                    <TouchableOpacity
+                                        style={styles.barcodeButton}
+                                        onPress={() => openBarcodeScanner(index)}
+                                    >
+                                        <Ionicons name="barcode-outline" size={20} color="#2C5F2D" />
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                             
                             <View style={styles.risultatoBox}>
@@ -90,6 +134,27 @@ const VociInput: React.FC<VociInputProps> = ({
                 <Ionicons name="add-circle-outline" size={22} color="#2C5F2D" />
                 <Text style={styles.aggiungiText}>Aggiungi voce</Text>
             </TouchableOpacity>
+
+            {/* Modal per scanner barcode */}
+            <Modal
+                visible={showBarcodeModal}
+                animationType="slide"
+                onRequestClose={() => setShowBarcodeModal(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalHeader}>
+                        <Text style={styles.modalTitle}>Scansiona Peso</Text>
+                        <TouchableOpacity
+                            style={styles.closeButton}
+                            onPress={() => setShowBarcodeModal(false)}
+                        >
+                            <Ionicons name="close" size={28} color="#FFFFFF" />
+                        </TouchableOpacity>
+                    </View>
+                    
+                    <BarcodeReader onBarcodeScanned={handleBarcodeScanned} />
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -223,6 +288,44 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#2C5F2D',
         fontWeight: '700',
+    },
+    pesoInputRow: {
+        flexDirection: 'row',
+        gap: 4,
+    },
+    pesoInput: {
+        flex: 1,
+    },
+    barcodeButton: {
+        backgroundColor: '#E8F5E9',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#2C5F2D',
+        width: 44,
+        height: 44,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: '#f5f5f5',
+    },
+    modalHeader: {
+        backgroundColor: '#2C5F2D',
+        paddingTop: 60,
+        paddingBottom: 20,
+        paddingHorizontal: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: '#FFFFFF',
+    },
+    closeButton: {
+        padding: 4,
     },
 });
 

@@ -40,10 +40,10 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
     showShiftSwitch = false,
     products = []
 }) => {
-    const [lineaVoci, setLineaVoci] = useState([{ numScatole: '', peso: '' }]);
-    const [sigillatoVoci, setSigillatoVoci] = useState([{ numScatole: '', peso: '' }]);
-    const [apertoVoci, setApertoVoci] = useState([{ numScatole: '', peso: '' }]);
-    const [scartoVoci, setScartoVoci] = useState([{ numScatole: '', peso: '' }]);
+    const [lineaVoci, setLineaVoci] = useState([{ numScatole: '1', peso: '' }]);
+    const [sigillatoVoci, setSigillatoVoci] = useState([{ numScatole: '1', peso: '' }]);
+    const [apertoVoci, setApertoVoci] = useState([{ numScatole: '1', peso: '' }]);
+    const [scartoVoci, setScartoVoci] = useState([{ numScatole: '1', peso: '' }]);
     const [saving, setSaving] = useState(false);
     
     // Stati per product picker, date e turno
@@ -63,10 +63,10 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
                 setScartoVoci([{ numScatole: '1', peso: scorta.quantitaScarto?.toString() || '0' }]);
             } else {
                 // Modalità creazione: inizializza con voci vuote
-                setLineaVoci([{ numScatole: '', peso: '' }]);
-                setSigillatoVoci([{ numScatole: '', peso: '' }]);
-                setApertoVoci([{ numScatole: '', peso: '' }]);
-                setScartoVoci([{ numScatole: '', peso: '' }]);
+                setLineaVoci([{ numScatole: '1', peso: '' }]);
+                setSigillatoVoci([{ numScatole: '1', peso: '' }]);
+                setApertoVoci([{ numScatole: '1', peso: '' }]);
+                setScartoVoci([{ numScatole: '1', peso: '' }]);
                 setProdottoSelezionato('');
                 setDataSelezionata(new Date());
                 setIsMattina(true);
@@ -76,7 +76,7 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
 
     // Funzioni helper per gestire le voci
     const aggiungiVoce = (setter: React.Dispatch<React.SetStateAction<any[]>>) => {
-        setter((prev: any) => [...prev, { numScatole: '', peso: '' }]);
+        setter((prev: any) => [...prev, { numScatole: '1', peso: '' }]);
     };
 
     const rimuoviVoce = (setter: React.Dispatch<React.SetStateAction<any[]>>, index: number) => {

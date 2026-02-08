@@ -7,7 +7,7 @@ import PesoStandardCard from '../../components/peso_standard_card';
 import Product from '../../model/product';
 import PesoStandard from '../../model/peso_standard';
 import database from '../../db';
-import { Button } from 'react-native';
+
 
 const styles = StyleSheet.create({
     container: {

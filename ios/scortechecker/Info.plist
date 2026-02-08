@@ -27,7 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>scorte_checker</string>
+          <string>scorte-checker</string>
           <string>com.anonymous.scorte-checker</string>
         </array>
       </dict>

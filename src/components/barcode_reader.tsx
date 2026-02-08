@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { CameraView, Camera } from 'expo-camera';
 
-export default function BarcodeReader({ tipoScorta }) {
+interface BarcodeReaderProps {
+    tipoScorta?: string;
+    onBarcodeScanned?: (data: string, type: string) => void;
+}
+
+export default function BarcodeReader({ tipoScorta, onBarcodeScanned }: BarcodeReaderProps) {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
 
@@ -17,6 +22,11 @@ export default function BarcodeReader({ tipoScorta }) {
     const handleBarcodeScanned = ({ type, data }) => {
         setScanned(true);
         console.log(`Scanned barcode with type ${type} and data ${data}`);
+        
+        // Chiama la callback se fornita
+        if (onBarcodeScanned) {
+            onBarcodeScanned(data, type);
+        }
     };
 
     if (hasPermission === null) {

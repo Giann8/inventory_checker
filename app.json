@@ -39,10 +39,20 @@
       "@react-native-community/datetimepicker"
     ],
     "android": {
-      "package": "com.anonymous.scorte_checker"
+      "package": "com.anonymous.scorte_checker",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "ios": {
       "bundleIdentifier": "com.anonymous.scorte-checker"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1c6297bc-18b5-4518-877c-70f50dff2b97"
+      }
     }
   }
 }
