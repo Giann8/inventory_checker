@@ -40,6 +40,7 @@
       "@react-native-community/datetimepicker"
     ],
     "android": {
+      "icon": "./assets/icon.png",
       "package": "com.anonymous.scorte_checker",
       "permissions": [
         "android.permission.CAMERA",
