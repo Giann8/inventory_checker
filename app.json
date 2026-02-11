@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "inventory_checker",
-    "slug": "inventory_checker",
-    "scheme": "inventory-checker",
+    "name": "scorte_checker",
+    "slug": "scorte_checker",
+    "scheme": "scorte-checker",
     "icon": "./assets/icon.png",
     "version": "1.0.0",
     "orientation": "portrait",
