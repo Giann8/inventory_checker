@@ -1,6 +1,7 @@
 import { Model } from "@nozbe/watermelondb";
 import { date, field, relation, text, writer } from "@nozbe/watermelondb/decorators";
 import database from '../db';
+import { syncAfterChange } from '../Middleware/supabase_sync';
 
 class Scorte extends Model {
     static table = "scorte";
@@ -60,6 +61,10 @@ class Scorte extends Model {
                     scorta.updatedAt = new Date();
                 });
             });
+            
+            // Sincronizza dopo la creazione
+            await syncAfterChange();
+            
             return newScorta;
         } catch (error) {
             console.error('Errore creazione scorta:', error);
@@ -85,6 +90,7 @@ class Scorte extends Model {
             scorta.quantitaInLinea = nuovaQuantita;
             scorta.updatedAt = new Date();
         });
+        await syncAfterChange();
     }
 
     /**
@@ -96,6 +102,7 @@ class Scorte extends Model {
             scorta.quantitaInMagazzinoSigillato = nuovaQuantita;
             scorta.updatedAt = new Date();
         });
+        await syncAfterChange();
     }
 
     /** update della scorta aperta e inserita nelle gastro, sarà usata
@@ -107,6 +114,7 @@ class Scorte extends Model {
             scorta.quantitaInMagazzinoAperto = nuovaQuantita;
             scorta.updatedAt = new Date();
         });
+        await syncAfterChange();
     }
 
     /**
@@ -118,6 +126,7 @@ class Scorte extends Model {
             scorta.quantitaScarto = nuovaQuantita;
             scorta.updatedAt = new Date();
         });
+        await syncAfterChange();
     }
 }
 

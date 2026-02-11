@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { CameraView, Camera } from 'expo-camera';
 
@@ -10,6 +10,14 @@ interface BarcodeReaderProps {
 export default function BarcodeReader({ tipoScorta, onBarcodeScanned }: BarcodeReaderProps) {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
+    
+    const qrLock = useRef(false);
+
+    useEffect(() => {
+        // Reset del lock ogni volta che il componente si monta (modal si apre)
+        qrLock.current = false;
+        setScanned(false);
+    }, []);
 
     useEffect(() => {
         const getCameraPermission = async () => {
@@ -20,7 +28,13 @@ export default function BarcodeReader({ tipoScorta, onBarcodeScanned }: BarcodeR
     }, []);
 
     const handleBarcodeScanned = ({ type, data }) => {
+        // Previeni scansioni multiple usando il lock
+        if (qrLock.current) return;
+        
+        // Attiva il lock
+        qrLock.current = true;
         setScanned(true);
+        
         console.log(`Scanned barcode with type ${type} and data ${data}`);
         
         // Chiama la callback se fornita
@@ -61,7 +75,7 @@ export default function BarcodeReader({ tipoScorta, onBarcodeScanned }: BarcodeR
             
             <View style={styles.cameraContainer}>
                 <CameraView
-                    onBarcodeScanned={scanned ? undefined : handleBarcodeScanned}
+                    onBarcodeScanned={qrLock.current || scanned ? undefined : handleBarcodeScanned}
                     barcodeScannerSettings={{
                         barcodeTypes: [
                             "qr", 

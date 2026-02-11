@@ -7,6 +7,7 @@ import migrations from './migrations'
 import Product from '../model/product'
 import Scorte from '../model/scorte'
 import PesoStandard from '../model/peso_standard'
+import Tare from '../model/tare'
 
 // First, create the adapter to the underlying database:
 const adapter = new SQLiteAdapter({
@@ -30,7 +31,8 @@ const database = new Database({
     modelClasses: [
         Product,
         Scorte,
-        PesoStandard
+        PesoStandard,
+        Tare
     ],
 })
 

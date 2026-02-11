@@ -42,6 +42,8 @@
       "package": "com.anonymous.scorte_checker",
       "permissions": [
         "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ]
     },
@@ -53,6 +55,12 @@
       "eas": {
         "projectId": "1c6297bc-18b5-4518-877c-70f50dff2b97"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/1c6297bc-18b5-4518-877c-70f50dff2b97"
     }
   }
 }

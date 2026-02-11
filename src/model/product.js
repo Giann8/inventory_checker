@@ -2,6 +2,7 @@ import { Model } from "@nozbe/watermelondb";
 import { children, text, writer } from "@nozbe/watermelondb/decorators";
 import { Q } from "@nozbe/watermelondb";
 import database from "../db";
+import { syncAfterChange } from "../Middleware/supabase_sync";
 class Product extends Model {
     static table = "prodotti";
 
@@ -10,11 +11,12 @@ class Product extends Model {
         scorte: { type: 'has_many', foreignKey: 'product_id' },
         pesi_Standard: { type: 'has_many', foreignKey: 'product_id' },
     };
-    
+
     @text('name') name;
     @text('type') type;
     @children('scorte') scorte;
     @children('pesi_standard') pesiStandard;
+
 
     /**
      * Crea un nuovo record prodotto nel database
@@ -24,12 +26,20 @@ class Product extends Model {
      */
     static async creaProdotto(name, type) {
         try {
+            const isDuplicate = (await database.get('prodotti').query(Q.where('name', name)).fetch()).length > 0;
+            if (isDuplicate) {
+                throw new Error('Prodotto duplicato');
+            }
             const newProduct = await database.write(async () => {
                 return await database.get('prodotti').create(prodotto => {
                     prodotto.name = name;
                     prodotto.type = type;
                 });
             });
+            
+            // Sincronizza dopo la creazione
+            await syncAfterChange();
+            
             return newProduct;
         } catch (error) {
             console.error('Errore creazione prodotto:', error);
@@ -46,6 +56,9 @@ class Product extends Model {
             await database.write(async () => {
                 return await database.get('prodotti').find(prodotto.id).then(prod => prod.destroyPermanently()); // Soft delete
             });
+            
+            // Sincronizza dopo l'eliminazione
+            await syncAfterChange();
         } catch (error) {
             console.error('Errore eliminazione prodotto:', error);
             throw error; // Rilancia l'errore per handling upstream
@@ -88,6 +101,10 @@ class Product extends Model {
                 scorta.createdAt = new Date();
                 scorta.updatedAt = new Date();
             });
+            
+            // Sincronizza dopo la creazione
+            await syncAfterChange();
+            
             return newScorta;
         } catch (error) {
             console.error('Errore creazione scorta vuota:', error);
@@ -103,6 +120,10 @@ class Product extends Model {
                 pesoStandard.descrizione = descrizione;
                 pesoStandard.isDefault = isDefault;
             });
+            
+            // Sincronizza dopo la creazione
+            await syncAfterChange();
+            
             return newPesoStandard;
         } catch (error) {
             console.error('Errore aggiunta peso standard:', error);

@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { Link } from 'expo-router';
 import { withObservables } from '@nozbe/watermelondb/react';
 import database from '../db';
 import { Q } from '@nozbe/watermelondb';
 import { of, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { useState, useEffect } from 'react';
+import { checkUnsyncedChanges, syncManuale } from '../Middleware/supabase_sync';
+import NetInfo from '@react-native-community/netinfo';
 
 const getCurrentShift = () => {
   const hour = new Date().getHours();
@@ -13,11 +16,84 @@ const getCurrentShift = () => {
 };
 
 const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTurni }) => {
+  const [hasUnsynced, setHasUnsynced] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Controlla modifiche non sincronizzate
+  useEffect(() => {
+    const checkSync = async () => {
+      const unsynced = await checkUnsyncedChanges();
+      setHasUnsynced(unsynced);
+    };
+    
+    checkSync();
+    const interval = setInterval(checkSync, 5000); // Controlla ogni 5 secondi
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Controlla connessione
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsOnline(state.isConnected === true && state.isInternetReachable !== false);
+    });
+    
+    return () => unsubscribe();
+  }, []);
+
+  const handleManualSync = async () => {
+    setIsSyncing(true);
+    const result = await syncManuale();
+    setIsSyncing(false);
+    
+    Alert.alert(
+      result.success ? '✓ Sincronizzazione' : '✗ Errore',
+      result.message
+    );
+    
+    if (result.success) {
+      const unsynced = await checkUnsyncedChanges();
+      setHasUnsynced(unsynced);
+    }
+  };
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.header}>
         <Text style={styles.title}>Inventory Checker</Text>
       </View>
+      
+      {/* Sync Status Banner */}
+      {(hasUnsynced || !isOnline) && (
+        <TouchableOpacity 
+          style={[styles.syncBanner, !isOnline && styles.syncBannerOffline]} 
+          onPress={handleManualSync}
+          disabled={isSyncing || !isOnline}
+        >
+          {isSyncing ? (
+            <ActivityIndicator color="#FFF" size="small" />
+          ) : (
+            <>
+              <Text style={styles.syncBannerIcon}>
+                {!isOnline ? '📴' : hasUnsynced ? '🔄' : '✓'}
+              </Text>
+              <View style={styles.syncBannerTextContainer}>
+                <Text style={styles.syncBannerText}>
+                  {!isOnline 
+                    ? 'Modalità Offline' 
+                    : hasUnsynced 
+                    ? 'Modifiche non sincronizzate'
+                    : 'Tutto sincronizzato'}
+                </Text>
+                {isOnline && hasUnsynced && (
+                  <Text style={styles.syncBannerSubtext}>Tocca per sincronizzare</Text>
+                )}
+              </View>
+            </>
+          )}
+        </TouchableOpacity>
+      )}
       
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         <View style={styles.statsContainer}>
@@ -141,6 +217,34 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  syncBanner: {
+    backgroundColor: '#FF9800',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  syncBannerOffline: {
+    backgroundColor: '#757575',
+  },
+  syncBannerIcon: {
+    fontSize: 20,
+  },
+  syncBannerTextContainer: {
+    flex: 1,
+  },
+  syncBannerText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  syncBannerSubtext: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    opacity: 0.9,
+    marginTop: 2,
   },
 });
 

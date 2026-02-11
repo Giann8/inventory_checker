@@ -24,25 +24,29 @@ const VociInput: React.FC<VociInputProps> = ({
     icon
 }) => {
     const [showBarcodeModal, setShowBarcodeModal] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState<number | null>(null);
 
-    const openBarcodeScanner = (index: number) => {
-        setCurrentIndex(index);
+    const openBarcodeScanner = () => {
         setShowBarcodeModal(true);
     };
 
     const handleBarcodeScanned = (data: string, type: string) => {
         const peso = BarcodeScanner.decode(data, type);
         
-        if (currentIndex !== null && peso) {
-            onAggiorna(currentIndex, 'peso', peso);
+        if (peso) {
+            // Inserisci il peso nell'ultima voce
+            const lastIndex = voci.length - 1;
+            onAggiorna(lastIndex, 'peso', peso);
+            
+            // Aggiungi automaticamente una nuova voce
+            setTimeout(() => {
+                onAggiungi();
+            }, 100);
+            
+            // Chiudi il modal dopo 1 secondo
+            setTimeout(() => {
+                setShowBarcodeModal(false);
+            }, 1000);
         }
-        
-        // Chiudi il modal dopo 1.5 secondi
-        setTimeout(() => {
-            setShowBarcodeModal(false);
-            setCurrentIndex(null);
-        }, 1500);
     };
 
     return (
@@ -77,22 +81,14 @@ const VociInput: React.FC<VociInputProps> = ({
                             
                             <View style={styles.inputWrapper}>
                                 <Text style={styles.inputLabel}>Peso</Text>
-                                <View style={styles.pesoInputRow}>
-                                    <TextInput
-                                        style={[styles.input, styles.inputSmall, styles.pesoInput]}
-                                        value={voce.peso}
-                                        onChangeText={(val) => onAggiorna(index, 'peso', val)}
-                                        keyboardType="decimal-pad"
-                                        placeholder="0"
-                                        placeholderTextColor="#999"
-                                    />
-                                    <TouchableOpacity
-                                        style={styles.barcodeButton}
-                                        onPress={() => openBarcodeScanner(index)}
-                                    >
-                                        <Ionicons name="barcode-outline" size={20} color="#2C5F2D" />
-                                    </TouchableOpacity>
-                                </View>
+                                <TextInput
+                                    style={[styles.input, styles.inputSmall]}
+                                    value={voce.peso}
+                                    onChangeText={(val) => onAggiorna(index, 'peso', val)}
+                                    keyboardType="decimal-pad"
+                                    placeholder="0"
+                                    placeholderTextColor="#999"
+                                />
                             </View>
                             
                             <View style={styles.risultatoBox}>
@@ -115,13 +111,23 @@ const VociInput: React.FC<VociInputProps> = ({
                 ))}
             </View>
             
-            <TouchableOpacity 
-                onPress={onAggiungi}
-                style={styles.aggiungiVoceButton}
-            >
-                <Ionicons name="add-circle-outline" size={22} color="#2C5F2D" />
-                <Text style={styles.aggiungiText}>Aggiungi voce</Text>
-            </TouchableOpacity>
+            <View style={styles.actionsRow}>
+                <TouchableOpacity 
+                    onPress={openBarcodeScanner}
+                    style={styles.scanButton}
+                >
+                    <Ionicons name="barcode-outline" size={24} color="#FFFFFF" />
+                    <Text style={styles.scanButtonText}>Scansiona</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                    onPress={onAggiungi}
+                    style={styles.aggiungiVoceButton}
+                >
+                    <Ionicons name="add-circle-outline" size={22} color="#2C5F2D" />
+                    <Text style={styles.aggiungiText}>Aggiungi voce</Text>
+                </TouchableOpacity>
+            </View>
 
             {/* Modal per scanner barcode */}
             <Modal
@@ -213,6 +219,7 @@ const styles = StyleSheet.create({
     },
     inputWrapper: {
         flex: 1,
+        minWidth: 80,
     },
     inputLabel: {
         fontSize: 10,
@@ -229,14 +236,15 @@ const styles = StyleSheet.create({
     },
     inputSmall: {
         padding: 10,
-        fontSize: 16,
-        fontWeight: '600',
+        fontSize: 18,
+        fontWeight: '700',
         textAlign: 'center',
     },
     moltiplicatore: {
-        fontSize: 20,
-        fontWeight: '700',
-        color: '#999',
+        fontSize: 28,
+        fontWeight: '800',
+        color: '#2C5F2D',
+        marginHorizontal: 4,
     },
     risultatoBox: {
         backgroundColor: '#E8F5E9',
@@ -259,13 +267,33 @@ const styles = StyleSheet.create({
     rimuoviButton: {
         padding: 2,
     },
-    aggiungiVoceButton: {
+    actionsRow: {
+        flexDirection: 'row',
+        gap: 8,
+        marginTop: 8,
+    },
+    scanButton: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         gap: 6,
         paddingVertical: 12,
-        marginTop: 8,
+        backgroundColor: '#2C5F2D',
+        borderRadius: 10,
+    },
+    scanButtonText: {
+        fontSize: 14,
+        color: '#FFFFFF',
+        fontWeight: '700',
+    },
+    aggiungiVoceButton: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 6,
+        paddingVertical: 12,
         backgroundColor: '#F0F8F0',
         borderRadius: 10,
         borderWidth: 1.5,
@@ -276,23 +304,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#2C5F2D',
         fontWeight: '700',
-    },
-    pesoInputRow: {
-        flexDirection: 'row',
-        gap: 4,
-    },
-    pesoInput: {
-        flex: 1,
-    },
-    barcodeButton: {
-        backgroundColor: '#E8F5E9',
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#2C5F2D',
-        width: 44,
-        height: 44,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     modalContainer: {
         flex: 1,

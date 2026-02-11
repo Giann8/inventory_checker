@@ -34,7 +34,7 @@ export default function AddProdotto() {
         }
         
         try {
-            await Product.creaProdotto(productName.trim(), productType.trim());
+            Product.creaProdotto(productName.trim(), productType.trim());
             Alert.alert('Successo', `Prodotto "${productName}" creato correttamente!`);
             setModalVisible(false);
             setProductName('');
@@ -42,7 +42,6 @@ export default function AddProdotto() {
             setStep('name');
         } catch (error) {
             Alert.alert('Errore', 'Impossibile creare il prodotto');
-            console.error('Errore creazione:', error);
         }
     };
 
