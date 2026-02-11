@@ -1,5 +1,5 @@
 import { Model } from "@nozbe/watermelondb";
-import { field, text, writer } from "@nozbe/watermelondb/decorators";
+import { field, text, date } from "@nozbe/watermelondb/decorators";
 import database from "../db";
 import { syncAfterChange } from '../Middleware/supabase_sync';
 
@@ -8,6 +8,8 @@ class Tare extends Model {
 
     @text('name') name;
     @field('weight') weight;
+    @date('created_at') createdAt;
+    @date('updated_at') updatedAt;
 
     static async creaTara(name, weight) {
         try {
