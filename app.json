@@ -49,7 +49,7 @@
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#2C5F2D"
+        "backgroundColor": "#F6A544"
       }
     },
     "ios": {
