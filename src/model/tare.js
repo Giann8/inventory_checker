@@ -1,5 +1,5 @@
 import { Model } from "@nozbe/watermelondb";
-import { field, text, date } from "@nozbe/watermelondb/decorators";
+import { field, text, date,writer } from "@nozbe/watermelondb/decorators";
 import database from "../db";
 import { syncAfterChange } from '../Middleware/supabase_sync';
 
