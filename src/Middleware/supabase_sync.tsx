@@ -80,6 +80,7 @@ export const syncWithSupabase = async () => {
             console.log('=== PUSH START ===')
             console.log('Changes to push:', JSON.stringify(changes, null, 2))
             
+
             // Rimuovi campi non necessari che potrebbero causare errori di parsing
             const cleanChanges = JSON.parse(JSON.stringify(changes))
             

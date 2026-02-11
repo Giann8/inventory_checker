@@ -6,6 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Scorte from '../model/scorte';
 import VociInput from './voci_input';
 import Product from '../model/product';
+import Tare from '../model/tare';
 
 interface ScortaFormModalProps {
     visible: boolean;
@@ -40,11 +41,12 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
     showShiftSwitch = false,
     products = []
 }) => {
-    const [lineaVoci, setLineaVoci] = useState([{ numScatole: '1', peso: '' }]);
-    const [sigillatoVoci, setSigillatoVoci] = useState([{ numScatole: '1', peso: '' }]);
-    const [apertoVoci, setApertoVoci] = useState([{ numScatole: '1', peso: '' }]);
-    const [scartoVoci, setScartoVoci] = useState([{ numScatole: '1', peso: '' }]);
+    const [lineaVoci, setLineaVoci] = useState([{ numScatole: '1', peso: '', taraId: '' }]);
+    const [sigillatoVoci, setSigillatoVoci] = useState([{ numScatole: '1', peso: '', taraId: '' }]);
+    const [apertoVoci, setApertoVoci] = useState([{ numScatole: '1', peso: '', taraId: '' }]);
+    const [scartoVoci, setScartoVoci] = useState([{ numScatole: '1', peso: '', taraId: '' }]);
     const [saving, setSaving] = useState(false);
+    const [tare, setTare] = useState<Tare[]>([]);
     
     // Stati per product picker, date e turno
     const [prodottoSelezionato, setProdottoSelezionato] = useState('');
@@ -52,21 +54,37 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
     const [isMattina, setIsMattina] = useState(true);
     const [showDatePickerInternal, setShowDatePickerInternal] = useState(false);
 
+    // Carica le tare all'apertura del modal
+    useEffect(() => {
+        if (visible) {
+            caricaTare();
+        }
+    }, [visible]);
+
+    const caricaTare = async () => {
+        try {
+            const tare = await Tare.getAllTare();
+            setTare(tare as Tare[]); ;
+        } catch (error) {
+            console.error('Errore nel caricamento delle tare:', error);
+        }
+    };
+
     // Pre-compila i campi quando si apre il modal
     useEffect(() => {
         if (visible) {
             if (scorta) {
                 // Modalità modifica: inizializza con i valori attuali come singola voce
-                setLineaVoci([{ numScatole: '1', peso: scorta.quantitaInLinea?.toString() || '0' }]);
-                setSigillatoVoci([{ numScatole: '1', peso: scorta.quantitaInMagazzinoSigillato?.toString() || '0' }]);
-                setApertoVoci([{ numScatole: '1', peso: scorta.quantitaInMagazzinoAperto?.toString() || '0' }]);
-                setScartoVoci([{ numScatole: '1', peso: scorta.quantitaScarto?.toString() || '0' }]);
+                setLineaVoci([{ numScatole: '1', peso: scorta.quantitaInLinea?.toString() || '0', taraId: '' }]);
+                setSigillatoVoci([{ numScatole: '1', peso: scorta.quantitaInMagazzinoSigillato?.toString() || '0', taraId: '' }]);
+                setApertoVoci([{ numScatole: '1', peso: scorta.quantitaInMagazzinoAperto?.toString() || '0', taraId: '' }]);
+                setScartoVoci([{ numScatole: '1', peso: scorta.quantitaScarto?.toString() || '0', taraId: '' }]);
             } else {
                 // Modalità creazione: inizializza con voci vuote
-                setLineaVoci([{ numScatole: '1', peso: '' }]);
-                setSigillatoVoci([{ numScatole: '1', peso: '' }]);
-                setApertoVoci([{ numScatole: '1', peso: '' }]);
-                setScartoVoci([{ numScatole: '1', peso: '' }]);
+                setLineaVoci([{ numScatole: '1', peso: '', taraId: '' }]);
+                setSigillatoVoci([{ numScatole: '1', peso: '', taraId: '' }]);
+                setApertoVoci([{ numScatole: '1', peso: '', taraId: '' }]);
+                setScartoVoci([{ numScatole: '1', peso: '', taraId: '' }]);
                 setProdottoSelezionato('');
                 setDataSelezionata(new Date());
                 setIsMattina(true);
@@ -76,7 +94,7 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
 
     // Funzioni helper per gestire le voci
     const aggiungiVoce = (setter: React.Dispatch<React.SetStateAction<any[]>>) => {
-        setter((prev: any) => [...prev, { numScatole: '1', peso: '' }]);
+        setter((prev: any) => [...prev, { numScatole: '1', peso: '', taraId: '' }]);
     };
 
     const rimuoviVoce = (setter: React.Dispatch<React.SetStateAction<any[]>>, index: number) => {
@@ -89,10 +107,19 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
         ));
     };
 
-    const calcolaTotale = (voci: { numScatole: string; peso: string }[]) => {
+    const calcolaTotale = (voci: { numScatole: string; peso: string; taraId?: string }[]) => {
         return voci.reduce((totale, voce) => {
             const num = parseFloat(voce.numScatole) || 0;
-            const peso = parseFloat(voce.peso) || 0;
+            let peso = parseFloat(voce.peso) || 0;
+            
+            // Sottrai il peso della tara se presente (tutto in grammi)
+            if (voce.taraId) {
+                const taraSelezionata = tare.find(t => t.id === voce.taraId);
+                if (taraSelezionata) {
+                    peso = Math.max(0, peso - taraSelezionata.weight);
+                }
+            }
+            
             return totale + (num * peso);
         }, 0);
     };

@@ -1,17 +1,19 @@
 import { TouchableOpacity, Text, View, Alert, Modal, TextInput, StyleSheet } from "react-native";
 import { useState } from "react";
 import Product from "../model/product";
+import { Picker } from '@react-native-picker/picker';
+import { PRODUCT_TYPES, ProductType } from "../types/ProductTypes";
 
 export default function AddProdotto() {
     const [modalVisible, setModalVisible] = useState(false);
     const [step, setStep] = useState<'name' | 'type'>('name');
     const [productName, setProductName] = useState('');
-    const [productType, setProductType] = useState('');
+    const [productType, setProductType] = useState<string>(ProductType.SALUME);
 
     const handleAddProduct = () => {
         setStep('name');
         setProductName('');
-        setProductType('');
+        setProductType(ProductType.SALUME);
         setModalVisible(true);
     };
 
@@ -28,17 +30,17 @@ export default function AddProdotto() {
     };
 
     const handleCreate = async () => {
-        if (!productType.trim()) {
+        if (!productType) {
             Alert.alert('Errore', 'Il tipo del prodotto è obbligatorio');
             return;
         }
         
         try {
-            Product.creaProdotto(productName.trim(), productType.trim());
+            Product.creaProdotto(productName.trim(), productType);
             Alert.alert('Successo', `Prodotto "${productName}" creato correttamente!`);
             setModalVisible(false);
             setProductName('');
-            setProductType('');
+            setProductType(ProductType.SALUME);
             setStep('name');
         } catch (error) {
             Alert.alert('Errore', 'Impossibile creare il prodotto');
@@ -48,7 +50,7 @@ export default function AddProdotto() {
     const handleCancel = () => {
         setModalVisible(false);
         setProductName('');
-        setProductType('');
+        setProductType(ProductType.SALUME);
         setStep('name');
     };
 
@@ -107,14 +109,21 @@ export default function AddProdotto() {
                         ) : (
                             <>
                                 <Text style={styles.modalLabel}>Tipo del prodotto:</Text>
-                                <TextInput
-                                    style={styles.input}
-                                    value={productType}
-                                    onChangeText={setProductType}
-                                    placeholder="Es: Latticini"
-                                    placeholderTextColor="#999"
-                                    autoFocus
-                                />
+                                <View style={styles.pickerContainer}>
+                                    <Picker
+                                        selectedValue={productType}
+                                        onValueChange={(itemValue) => setProductType(itemValue)}
+                                        style={styles.picker}
+                                    >
+                                        {PRODUCT_TYPES.map((type) => (
+                                            <Picker.Item 
+                                                key={type.value} 
+                                                label={type.label} 
+                                                value={type.value} 
+                                            />
+                                        ))}
+                                    </Picker>
+                                </View>
                                 
                                 <View style={styles.buttonRow}>
                                     <TouchableOpacity
@@ -213,6 +222,17 @@ const styles = StyleSheet.create({
         padding: 12,
         fontSize: 16,
         marginBottom: 20,
+    },
+    pickerContainer: {
+        backgroundColor: '#F8F9FA',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#E0E0E0',
+        marginBottom: 20,
+        overflow: 'hidden',
+    },
+    picker: {
+        height: 50,
     },
     buttonRow: {
         flexDirection: 'row',

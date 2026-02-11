@@ -24,6 +24,11 @@ const NavigationFooter = () => {
       route: '/screen_scorte_giornaliere',
     },
     {
+      label: 'Tare',
+      icon: <Ionicons name="cube-outline" size={24} color="#666" />,
+      route: '/screen_tare',
+    },
+    {
       label: 'Aggiungi',
       icon: <Ionicons name="add-outline" size={24} color="#666" />,
       route: '/aggiungi_scorte',
