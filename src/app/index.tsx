@@ -7,7 +7,7 @@ import { Q } from '@nozbe/watermelondb';
 import { of, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { useState, useEffect } from 'react';
-import { checkUnsyncedChanges, syncManuale } from '../Middleware/supabase_sync';
+import { checkUnsyncedChanges, syncManuale, syncWithSupabase } from '../Middleware/supabase_sync';
 import NetInfo from '@react-native-community/netinfo';
 
 const getCurrentShift = () => {
@@ -20,18 +20,28 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
   const [isOnline, setIsOnline] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  // Controlla modifiche non sincronizzate
+  // Controlla modifiche non sincronizzate e pull dal server
   useEffect(() => {
     const checkSync = async () => {
-      const unsynced = await checkUnsyncedChanges();
-      setHasUnsynced(unsynced);
+      try {
+        // Controlla se ci sono modifiche locali
+        const unsynced = await checkUnsyncedChanges();
+        setHasUnsynced(unsynced);
+        
+        // Se online, fa un pull silenzioso per ricevere aggiornamenti dal server
+        if (isOnline && !unsynced) {
+          await syncWithSupabase();
+        }
+      } catch (error) {
+        console.log('Errore nel polling di sincronizzazione:', error);
+      }
     };
     
     checkSync();
     const interval = setInterval(checkSync, 60000); // Controlla ogni 60 secondi
     
     return () => clearInterval(interval);
-  }, []);
+  }, [isOnline]);
 
   // Controlla connessione
   useEffect(() => {

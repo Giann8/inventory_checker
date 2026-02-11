@@ -4,6 +4,7 @@ import { withObservables } from '@nozbe/watermelondb/react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import database from '../db';
 import Tare from '../model/tare';
+import { syncAfterChange } from '../Middleware/supabase_sync';
 
 interface TareCardProps {
     tara: Tare;
@@ -53,6 +54,7 @@ const ScreenTareBase: React.FC<ScreenTareBaseProps> = ({ tare }) => {
                     onPress: async () => {
                         try {
                             await tara.deleteTare();
+                            await syncAfterChange();
                             Alert.alert('Successo', 'Contenitore eliminato!');
                         } catch (error) {
                             console.error('Errore eliminazione tara:', error);

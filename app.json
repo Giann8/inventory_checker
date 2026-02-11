@@ -46,7 +46,11 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
-      ]
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#2C5F2D"
+      }
     },
     "ios": {
       "bundleIdentifier": "com.anonymous.scorte-checker"

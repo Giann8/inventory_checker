@@ -272,16 +272,6 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
                         </View>
 
                         <VociInput
-                            titolo="Quantità in Linea"
-                            icon="stats-chart"
-                            voci={lineaVoci}
-                            onAggiungi={() => aggiungiVoce(setLineaVoci)}
-                            onRimuovi={(index) => rimuoviVoce(setLineaVoci, index)}
-                            onAggiorna={(index, campo, valore) => aggiornaVoce(setLineaVoci, index, campo, valore)}
-                            totale={calcolaTotale(lineaVoci)}
-                        />
-
-                        <VociInput
                             titolo="Quantità Sigillato"
                             icon="lock-closed"
                             voci={sigillatoVoci}
@@ -299,6 +289,16 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
                             onRimuovi={(index) => rimuoviVoce(setApertoVoci, index)}
                             onAggiorna={(index, campo, valore) => aggiornaVoce(setApertoVoci, index, campo, valore)}
                             totale={calcolaTotale(apertoVoci)}
+                        />
+
+                        <VociInput
+                            titolo="Quantità in Linea"
+                            icon="stats-chart"
+                            voci={lineaVoci}
+                            onAggiungi={() => aggiungiVoce(setLineaVoci)}
+                            onRimuovi={(index) => rimuoviVoce(setLineaVoci, index)}
+                            onAggiorna={(index, campo, valore) => aggiornaVoce(setLineaVoci, index, campo, valore)}
+                            totale={calcolaTotale(lineaVoci)}
                         />
 
                         <VociInput

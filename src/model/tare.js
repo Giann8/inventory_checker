@@ -1,6 +1,7 @@
 import { Model } from "@nozbe/watermelondb";
 import { field, text, writer } from "@nozbe/watermelondb/decorators";
 import database from "../db";
+import { syncAfterChange } from '../Middleware/supabase_sync';
 
 class Tare extends Model {
     static table = "tare";
@@ -16,6 +17,10 @@ class Tare extends Model {
                     tara.weight = Number(weight) || 0;
                 });
             });
+            
+            // Sincronizza dopo la creazione
+            await syncAfterChange();
+            
             return newTara;
         } catch (error) {
             console.error('Errore creazione tara:', error);
