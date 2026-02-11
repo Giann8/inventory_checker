@@ -3,7 +3,7 @@ import { useState } from "react";
 import Product from "../model/product";
 import { Picker } from '@react-native-picker/picker';
 import { PRODUCT_TYPES, ProductType } from "../types/ProductTypes";
-
+import Ionicons from '@expo/vector-icons/Ionicons';
 export default function AddProdotto() {
     const [modalVisible, setModalVisible] = useState(false);
     const [step, setStep] = useState<'name' | 'type'>('name');
@@ -62,7 +62,7 @@ export default function AddProdotto() {
                 activeOpacity={0.8}
             >
                 <View>
-                    <Text style={styles.buttonIcon}>📦</Text>
+                    <Text style={styles.buttonIcon}><Ionicons name="cube" size={40} color="#FFF" /></Text>
                     <Text style={styles.buttonText}>Aggiungi Prodotto</Text>
                 </View>
             </TouchableOpacity>

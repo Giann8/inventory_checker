@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, ActivityIndicator, AppState } from 'react-native';
 import { Link } from 'expo-router';
 import { withObservables } from '@nozbe/watermelondb/react';
 import database from '../db';
@@ -9,39 +9,96 @@ import { map } from 'rxjs/operators';
 import { useState, useEffect } from 'react';
 import { checkUnsyncedChanges, syncManuale, syncWithSupabase } from '../Middleware/supabase_sync';
 import NetInfo from '@react-native-community/netinfo';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+let hasInitialSyncOccurred = false;
+let lastAutoSyncTime = Date.now();
 
 const getCurrentShift = () => {
   const hour = new Date().getHours();
-  return hour < 14 ? 'Mattina ☀️' : 'Sera 🌙';
+  return (hour < 14 && hour >= 8 ? <Text>Mattina <Ionicons name="sunny" size={24} color="orange" /></Text> : <Text>Sera <Ionicons name="moon" size={24} color="#FFA500" /></Text>);
 };
 
 const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTurni }) => {
   const [hasUnsynced, setHasUnsynced] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isInitialSync, setIsInitialSync] = useState(!hasInitialSyncOccurred);
+  const [currentTime, setCurrentTime] = useState(Date.now());
 
-  // Controlla modifiche non sincronizzate e pull dal server
   useEffect(() => {
+    if (hasInitialSyncOccurred) {
+      setIsInitialSync(false);
+      return;
+    }
+    
+    const initialSync = async () => {
+      setIsInitialSync(true);
+      const startTime = Date.now();
+      
+      try {
+        if (isOnline) {
+          console.log('Sincronizzazione iniziale in corso...');
+          await syncWithSupabase();
+        }
+        const unsynced = await checkUnsyncedChanges();
+        setHasUnsynced(unsynced);
+      } catch (error) {
+        console.log('Errore nella sincronizzazione iniziale:', error);
+      } finally {
+        const elapsedTime = Date.now() - startTime;
+        const minLoadingTime = 1500;
+        const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
+        
+        setTimeout(() => {
+          setIsInitialSync(false);
+          hasInitialSyncOccurred = true;
+        }, remainingTime);
+      }
+    };
+    
+    initialSync();
+  }, []);
+
+  useEffect(() => {
+    if (isInitialSync) return;
+    
     const checkSync = async () => {
       try {
-        // Controlla se ci sono modifiche locali
         const unsynced = await checkUnsyncedChanges();
         setHasUnsynced(unsynced);
         
-        // Se online, fa un pull silenzioso per ricevere aggiornamenti dal server
         if (isOnline && !unsynced) {
           await syncWithSupabase();
         }
+        
+        lastAutoSyncTime = Date.now();
       } catch (error) {
         console.log('Errore nel polling di sincronizzazione:', error);
       }
     };
     
-    checkSync();
-    const interval = setInterval(checkSync, 60000); // Controlla ogni 60 secondi
+    const interval = setInterval(checkSync, 300000);
     
     return () => clearInterval(interval);
-  }, [isOnline]);
+  }, [isOnline, isInitialSync]);
+
+  useEffect(() => {
+    if (isInitialSync) return;
+    
+    const timer = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, [isInitialSync]);
+
+  // Calcola secondi rimanenti basandosi sul timestamp
+  const getSecondsUntilSync = () => {
+    const elapsed = Math.floor((Date.now() - lastAutoSyncTime) / 1000);
+    const remaining = Math.max(0, 300 - elapsed);
+    return remaining;
+  };
 
   // Controlla connessione
   useEffect(() => {
@@ -51,6 +108,27 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
     
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', async (nextAppState) => {
+      if (nextAppState === 'background' || nextAppState === 'inactive') {
+        console.log('App in background, tentativo sincronizzazione...');
+        try {
+          const unsynced = await checkUnsyncedChanges();
+          if (unsynced && isOnline) {
+            await syncWithSupabase();
+            console.log('Sincronizzazione in background completata');
+          }
+        } catch (error) {
+          console.log('Errore sincronizzazione in background:', error);
+        }
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [isOnline]);
 
   const handleManualSync = async () => {
     setIsSyncing(true);
@@ -63,10 +141,8 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
     );
     
     if (result.success) {
-      // Dopo un sync riuscito, non ci sono più modifiche da sincronizzare
       setHasUnsynced(false);
       
-      // Ricontrolla dopo un breve delay per essere sicuri
       setTimeout(async () => {
         const unsynced = await checkUnsyncedChanges();
         setHasUnsynced(unsynced);
@@ -74,13 +150,24 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
     }
   };
 
+  if (isInitialSync) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#2C5F2D" />
+        <Text style={styles.loadingText}>Sincronizzazione con il database...</Text>
+        {!isOnline && (
+          <Text style={styles.offlineText}>Modalità Offline</Text>
+        )}
+      </View>
+    );
+  }
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.header}>
         <Text style={styles.title}>Inventory Checker</Text>
       </View>
       
-      {/* Sync Status Banner */}
       {(hasUnsynced || !isOnline) && (
         <TouchableOpacity 
           style={[styles.syncBanner, !isOnline && styles.syncBannerOffline]} 
@@ -92,7 +179,7 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
           ) : (
             <>
               <Text style={styles.syncBannerIcon}>
-                {!isOnline ? '📴' : '🔄'}
+                {!isOnline ? <Ionicons name="cloud-offline" size={16} color="#FFF" /> : <Ionicons name="cloud-upload" size={16} color="#FFF" />}
               </Text>
               <View style={styles.syncBannerTextContainer}>
                 <Text style={styles.syncBannerText}>
@@ -107,6 +194,14 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
             </>
           )}
         </TouchableOpacity>
+      )}
+      
+      {isOnline && !hasUnsynced && !isSyncing && (
+        <View style={styles.countdownBanner}>
+          <Text style={styles.countdownText}>
+            Prossimo aggiornamento tra {Math.floor(getSecondsUntilSync() / 60)}:{String(getSecondsUntilSync() % 60).padStart(2, '0')}
+          </Text>
+        </View>
       )}
       
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -137,13 +232,13 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
       
       <View style={styles.linksContainer}>
         <Link href="/screen_lista_prodotti" style={styles.link}>
-          <Text style={styles.linkText}>📦 Gestisci Prodotti</Text>
+          <Text style={styles.linkText}><Ionicons name="cube" size={20} color="#FFF" /> Gestisci Prodotti</Text>
         </Link>
         <Link href="/screen_scorte_giornaliere" style={styles.link}>
-          <Text style={styles.linkText}>📊 Scorte Giornaliere</Text>
+          <Text style={styles.linkText}><Ionicons name="bar-chart" size={20} color="#FFF" /> Scorte Giornaliere</Text>
         </Link>
         <Link href="/aggiungi_scorte" style={styles.link}>
-          <Text style={styles.linkText}>➕ Aggiungi Scorte</Text>
+          <Text style={styles.linkText}><Ionicons name="add" size={20} color="#FFF" /> Aggiungi Scorte</Text>
         </Link>
       </View>
       
@@ -157,6 +252,24 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+  },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 20,
+  },
+  loadingText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#2C5F2D',
+    marginTop: 20,
+  },
+  offlineText: {
+    fontSize: 14,
+    color: '#FF9800',
+    marginTop: 10,
   },
   header: {
     backgroundColor: '#2C5F2D',
@@ -228,7 +341,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   linkText: {
-    fontSize: 16,
+    fontSize: 20,
+    textAlign: 'center',
     fontWeight: '600',
     color: '#FFFFFF',
   },
@@ -259,6 +373,17 @@ const styles = StyleSheet.create({
     fontSize: 11,
     opacity: 0.9,
     marginTop: 2,
+  },
+  countdownBanner: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  countdownText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '500',
   },
 });
 
