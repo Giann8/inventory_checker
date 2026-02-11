@@ -28,7 +28,7 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
     };
     
     checkSync();
-    const interval = setInterval(checkSync, 30000); // Controlla ogni 30 secondi
+    const interval = setInterval(checkSync, 60000); // Controlla ogni 60 secondi
     
     return () => clearInterval(interval);
   }, []);
