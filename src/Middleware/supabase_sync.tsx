@@ -80,9 +80,13 @@ export const syncWithSupabase = async () => {
             console.log('=== PUSH START ===')
             console.log('Changes to push:', JSON.stringify(changes, null, 2))
             
-            const { error } = await supabase.rpc('push', { changes })
+            // Rimuovi campi non necessari che potrebbero causare errori di parsing
+            const cleanChanges = JSON.parse(JSON.stringify(changes))
+            
+            const { error } = await supabase.rpc('push', { changes: cleanChanges })
             if (error) {
                 console.error('Push error:', error)
+                console.error('Changes that failed:', JSON.stringify(cleanChanges, null, 2))
                 throw new Error('Failed to push changes to Supabase: ' + error.message)
             }
             console.log('=== PUSH END ===')

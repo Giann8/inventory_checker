@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS pesi_standard_deleted (
 
 -- 4. FUNZIONE PULL - Recupera modifiche dal server
 -- ============================================
-DROP FUNCTION IF EXISTS pull(BIGINT);
+DROP FUNCTION IF EXISTS push(BIGINT);
 -- Elimina la vecchia funzione se esiste
 DROP FUNCTION IF EXISTS pull(BIGINT);
 
@@ -271,6 +271,7 @@ CREATE OR REPLACE FUNCTION push(changes JSONB)
 RETURNS VOID AS $$
 DECLARE
   record_data JSONB;
+  deleted_id TEXT;
 BEGIN
   -- ========== PRODOTTI ==========
   -- Created
@@ -303,13 +304,13 @@ BEGIN
   
   -- Deleted
   IF changes ? 'prodotti' AND changes->'prodotti' ? 'deleted' THEN
-    FOR record_data IN SELECT jsonb_array_elements_text(changes->'prodotti'->'deleted')
+    FOR deleted_id IN SELECT * FROM jsonb_array_elements_text(changes->'prodotti'->'deleted')
     LOOP
       INSERT INTO prodotti_deleted (id, deleted_at)
-      VALUES (record_data, EXTRACT(EPOCH FROM NOW())::BIGINT * 1000)
+      VALUES (deleted_id, EXTRACT(EPOCH FROM NOW())::BIGINT * 1000)
       ON CONFLICT (id) DO NOTHING;
       
-      DELETE FROM prodotti WHERE id = record_data;
+      DELETE FROM prodotti WHERE id = deleted_id;
     END LOOP;
   END IF;
   
@@ -344,13 +345,13 @@ BEGIN
   
   -- Deleted
   IF changes ? 'tare' AND changes->'tare' ? 'deleted' THEN
-    FOR record_data IN SELECT jsonb_array_elements_text(changes->'tare'->'deleted')
+    FOR deleted_id IN SELECT * FROM jsonb_array_elements_text(changes->'tare'->'deleted')
     LOOP
       INSERT INTO tare_deleted (id, deleted_at)
-      VALUES (record_data, EXTRACT(EPOCH FROM NOW())::BIGINT * 1000)
+      VALUES (deleted_id, EXTRACT(EPOCH FROM NOW())::BIGINT * 1000)
       ON CONFLICT (id) DO NOTHING;
       
-      DELETE FROM tare WHERE id = record_data;
+      DELETE FROM tare WHERE id = deleted_id;
     END LOOP;
   END IF;
   
@@ -392,13 +393,13 @@ BEGIN
   
   -- Deleted
   IF changes ? 'scorte' AND changes->'scorte' ? 'deleted' THEN
-    FOR record_data IN SELECT jsonb_array_elements_text(changes->'scorte'->'deleted')
+    FOR deleted_id IN SELECT * FROM jsonb_array_elements_text(changes->'scorte'->'deleted')
     LOOP
       INSERT INTO scorte_deleted (id, deleted_at)
-      VALUES (record_data, EXTRACT(EPOCH FROM NOW())::BIGINT * 1000)
+      VALUES (deleted_id, EXTRACT(EPOCH FROM NOW())::BIGINT * 1000)
       ON CONFLICT (id) DO NOTHING;
       
-      DELETE FROM scorte WHERE id = record_data;
+      DELETE FROM scorte WHERE id = deleted_id;
     END LOOP;
   END IF;
   
@@ -437,13 +438,13 @@ BEGIN
   
   -- Deleted
   IF changes ? 'pesi_standard' AND changes->'pesi_standard' ? 'deleted' THEN
-    FOR record_data IN SELECT jsonb_array_elements_text(changes->'pesi_standard'->'deleted')
+    FOR deleted_id IN SELECT * FROM jsonb_array_elements_text(changes->'pesi_standard'->'deleted')
     LOOP
       INSERT INTO pesi_standard_deleted (id, deleted_at)
-      VALUES (record_data, EXTRACT(EPOCH FROM NOW())::BIGINT * 1000)
+      VALUES (deleted_id, EXTRACT(EPOCH FROM NOW())::BIGINT * 1000)
       ON CONFLICT (id) DO NOTHING;
       
-      DELETE FROM pesi_standard WHERE id = record_data;
+      DELETE FROM pesi_standard WHERE id = deleted_id;
     END LOOP;
   END IF;
   
