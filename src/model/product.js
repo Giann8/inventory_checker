@@ -1,5 +1,5 @@
 import { Model } from "@nozbe/watermelondb";
-import { children, text, writer } from "@nozbe/watermelondb/decorators";
+import { children, date, text, writer } from "@nozbe/watermelondb/decorators";
 import { Q } from "@nozbe/watermelondb";
 import database from "../db";
 import { syncAfterChange } from "../Middleware/supabase_sync";
@@ -14,6 +14,8 @@ class Product extends Model {
 
     @text('name') name;
     @text('type') type;
+    @date('created_at') createdAt;
+    @date('updated_at') updatedAt;
     @children('scorte') scorte;
     @children('pesi_standard') pesiStandard;
 
@@ -34,6 +36,8 @@ class Product extends Model {
                 return await database.get('prodotti').create(prodotto => {
                     prodotto.name = name;
                     prodotto.type = type;
+                    prodotto.createdAt = new Date();
+                    prodotto.updatedAt = new Date();
                 });
             });
             
