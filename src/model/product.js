@@ -101,10 +101,6 @@ class Product extends Model {
                 scorta.createdAt = new Date();
                 scorta.updatedAt = new Date();
             });
-            
-            // Sincronizza dopo la creazione
-            await syncAfterChange();
-            
             return newScorta;
         } catch (error) {
             console.error('Errore creazione scorta vuota:', error);
@@ -120,10 +116,6 @@ class Product extends Model {
                 pesoStandard.descrizione = descrizione;
                 pesoStandard.isDefault = isDefault;
             });
-            
-            // Sincronizza dopo la creazione
-            await syncAfterChange();
-            
             return newPesoStandard;
         } catch (error) {
             console.error('Errore aggiunta peso standard:', error);

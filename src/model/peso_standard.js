@@ -18,7 +18,6 @@ class PesoStandard extends Model {
     @writer async deletePesoStandard() {
         try {
             await this.markAsDeleted(); // Soft delete
-            await syncAfterChange();
         } catch (error) {
             console.error('Errore eliminazione peso standard:', error);
             throw error; // Rilancia l'errore per handling upstream
@@ -28,7 +27,6 @@ class PesoStandard extends Model {
         await this.update(pesoStandard=>{
             pesoStandard.isDefault = true;
         })
-        await syncAfterChange();
     }
 }
 

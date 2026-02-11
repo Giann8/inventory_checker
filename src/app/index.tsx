@@ -28,7 +28,7 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
     };
     
     checkSync();
-    const interval = setInterval(checkSync, 5000); // Controlla ogni 5 secondi
+    const interval = setInterval(checkSync, 30000); // Controlla ogni 30 secondi
     
     return () => clearInterval(interval);
   }, []);
@@ -53,8 +53,14 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
     );
     
     if (result.success) {
-      const unsynced = await checkUnsyncedChanges();
-      setHasUnsynced(unsynced);
+      // Dopo un sync riuscito, non ci sono più modifiche da sincronizzare
+      setHasUnsynced(false);
+      
+      // Ricontrolla dopo un breve delay per essere sicuri
+      setTimeout(async () => {
+        const unsynced = await checkUnsyncedChanges();
+        setHasUnsynced(unsynced);
+      }, 2000);
     }
   };
 
@@ -76,15 +82,13 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
           ) : (
             <>
               <Text style={styles.syncBannerIcon}>
-                {!isOnline ? '📴' : hasUnsynced ? '🔄' : '✓'}
+                {!isOnline ? '📴' : '🔄'}
               </Text>
               <View style={styles.syncBannerTextContainer}>
                 <Text style={styles.syncBannerText}>
                   {!isOnline 
                     ? 'Modalità Offline' 
-                    : hasUnsynced 
-                    ? 'Modifiche non sincronizzate'
-                    : 'Tutto sincronizzato'}
+                    : 'Modifiche locali da sincronizzare'}
                 </Text>
                 {isOnline && hasUnsynced && (
                   <Text style={styles.syncBannerSubtext}>Tocca per sincronizzare</Text>

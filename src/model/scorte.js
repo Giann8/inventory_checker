@@ -90,7 +90,6 @@ class Scorte extends Model {
             scorta.quantitaInLinea = nuovaQuantita;
             scorta.updatedAt = new Date();
         });
-        await syncAfterChange();
     }
 
     /**
@@ -102,7 +101,6 @@ class Scorte extends Model {
             scorta.quantitaInMagazzinoSigillato = nuovaQuantita;
             scorta.updatedAt = new Date();
         });
-        await syncAfterChange();
     }
 
     /** update della scorta aperta e inserita nelle gastro, sarà usata
@@ -114,7 +112,6 @@ class Scorte extends Model {
             scorta.quantitaInMagazzinoAperto = nuovaQuantita;
             scorta.updatedAt = new Date();
         });
-        await syncAfterChange();
     }
 
     /**
@@ -126,7 +123,6 @@ class Scorte extends Model {
             scorta.quantitaScarto = nuovaQuantita;
             scorta.updatedAt = new Date();
         });
-        await syncAfterChange();
     }
 }
 
