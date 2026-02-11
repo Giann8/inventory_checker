@@ -54,7 +54,8 @@ class Product extends Model {
     static async eliminaProdotto(prodotto) {
         try {
             await database.write(async () => {
-                return await database.get('prodotti').find(prodotto.id).then(prod => prod.destroyPermanently()); // Soft delete
+                const prod = await database.get('prodotti').find(prodotto.id);
+                await prod.markAsDeleted(); // Soft delete per sync
             });
             
             // Sincronizza dopo l'eliminazione
