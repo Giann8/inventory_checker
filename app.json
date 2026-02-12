@@ -40,15 +40,16 @@
       "@react-native-community/datetimepicker"
     ],
     "android": {
-      "icon": "./assets/icon.png",
       "package": "com.anonymous.scorte_checker",
       "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#2980b9"
+        "backgroundColor": "#F6A544"
       }
     },
     "ios": {
