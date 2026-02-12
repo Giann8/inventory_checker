@@ -34,10 +34,10 @@ class Scorte extends Model {
             const newScorta = await database.write(async () => {
                 return await database.get('scorte').create(scorta => {
                     scorta.productId = productId;
-                    scorta.quantitaInLinea = Number(quantitaInLinea) || 0;
-                    scorta.quantitaInMagazzinoSigillato = Number(quantitaInMagazzinoSigillato) || 0;
-                    scorta.quantitaInMagazzinoAperto = Number(quantitaInMagazzinoAperto) || 0;
-                    scorta.quantitaScarto = Number(quantitaScarto) || 0;
+                    scorta.quantitaInLinea = parseFloat(quantitaInLinea) || 0;
+                    scorta.quantitaInMagazzinoSigillato = parseFloat(quantitaInMagazzinoSigillato) || 0;
+                    scorta.quantitaInMagazzinoAperto = parseFloat(quantitaInMagazzinoAperto) || 0;
+                    scorta.quantitaScarto = parseFloat(quantitaScarto) || 0;
 
                     // Gestione della data e turno
                     let dataScorta;
@@ -87,7 +87,7 @@ class Scorte extends Model {
      */
     @writer async aggiornaScortaInLinea(nuovaQuantita) {
         await this.update(scorta => {
-            scorta.quantitaInLinea = nuovaQuantita;
+            scorta.quantitaInLinea = parseFloat(nuovaQuantita) || 0;
             scorta.updatedAt = new Date();
         });
     }
@@ -98,7 +98,7 @@ class Scorte extends Model {
      */
     @writer async aggiornaScortaSigillata(nuovaQuantita) {
         await this.update(scorta => {
-            scorta.quantitaInMagazzinoSigillato = nuovaQuantita;
+            scorta.quantitaInMagazzinoSigillato = parseFloat(nuovaQuantita) || 0;
             scorta.updatedAt = new Date();
         });
     }
@@ -109,7 +109,7 @@ class Scorte extends Model {
      */
     @writer async aggiornaScortaAperta(nuovaQuantita) {
         await this.update(scorta => {
-            scorta.quantitaInMagazzinoAperto = nuovaQuantita;
+            scorta.quantitaInMagazzinoAperto = parseFloat(nuovaQuantita) || 0;
             scorta.updatedAt = new Date();
         });
     }
@@ -120,7 +120,7 @@ class Scorte extends Model {
      */
     @writer async aggiornaScortaScarto(nuovaQuantita) {
         await this.update(scorta => {
-            scorta.quantitaScarto = nuovaQuantita;
+            scorta.quantitaScarto = parseFloat(nuovaQuantita) || 0;
             scorta.updatedAt = new Date();
         });
     }

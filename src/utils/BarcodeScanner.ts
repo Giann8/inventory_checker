@@ -1,3 +1,4 @@
+import { GS1Data, AIConfig } from '../types/BarcodeTypes';
 /**
  * Classe per decodificare diversi formati di barcode e estrarre informazioni come il peso
  */
@@ -8,7 +9,7 @@ export class BarcodeScanner {
      * @param type - Il tipo di barcode (ean13, code128, etc)
      * @returns Il peso estratto come stringa, o null se non riconosciuto
      */
-    public static decode(data: string, type: string): string | null {
+    public static decode(data: string, type: string): string | GS1Data {
         console.log(`Decodifica barcode - Tipo: ${type}, Data: ${data}`);
 
         // Prova i vari handler nell'ordine
@@ -17,13 +18,13 @@ export class BarcodeScanner {
             this.handleEAN13Extended,
             this.handleCustomText,
             this.handleSeparatorFormat,
-            this.handlePureNumeric,
+            this.handleGs1Weight, // Da implementare se usi GS1
         ];
 
         for (const handler of handlers) {
             const result = handler(data, type);
             if (result !== null) {
-                console.log(`Formato riconosciuto: ${handler.name} → Peso: ${result}`);
+                console.log(`Formato riconosciuto: ${handler.name} → Peso: `, typeof result === 'string' ? result : JSON.stringify(result));
                 return result;
             }
         }
@@ -41,7 +42,7 @@ export class BarcodeScanner {
         if (data.length === 13 && data.startsWith('2')) {
             const pesoStr = data.substring(7, 12);
             const peso = parseInt(pesoStr);
-            
+
             if (!isNaN(peso)) {
                 return peso.toString();
             }
@@ -58,7 +59,7 @@ export class BarcodeScanner {
         if (data.length === 13 && /^2[0-9]/.test(data)) {
             const pesoStr = data.substring(7, 12);
             const peso = parseInt(pesoStr);
-            
+
             if (!isNaN(peso)) {
                 return peso.toString();
             }
@@ -97,19 +98,99 @@ export class BarcodeScanner {
      * Formato: 12345678 (8 cifre = tutto peso)
      * Personalizzabile in base alle tue esigenze
      */
-    private static handlePureNumeric(data: string, type: string): string | null {
-        // Esempio: barcode di esattamente 8 cifre
-        if (/^\d{8}$/.test(data)) {
-            return data;
+    private static handleGs1Weight(rawData: string, type: string): GS1Data {
+        const AI_MAP = new Map<string, AIConfig>([
+            ['01', { field: 'gtin', length: 14 }],
+            ['17', { field: 'expiryDate', length: 6 }],
+            ['10', { field: 'lot', variable: true }],
+            ['21', { field: 'serial', variable: true }],
+        ]);
+        const result: any = {};
+        let pos = 0;
+
+        while (pos < rawData.length) {
+            let config: AIConfig | undefined;
+            let aiLen = 0;
+            let decimals: number | undefined;
+
+            // Controlla AI peso (310n)
+            if (pos + 4 <= rawData.length && rawData.substring(pos, pos + 3) === '310') {
+                const decimalChar = rawData[pos + 3];
+                if (decimalChar >= '0' && decimalChar <= '9') {
+                    config = { field: 'weightKg', length: 6 };
+                    decimals = parseInt(decimalChar);
+                    aiLen = 4;
+                }
+            }
+
+            // Altrimenti cerca AI standard
+            if (!config && pos + 4 <= rawData.length) {
+                config = AI_MAP.get(rawData.substring(pos, pos + 4));
+                if (config) aiLen = 4;
+            }
+
+            if (!config && pos + 2 <= rawData.length) {
+                config = AI_MAP.get(rawData.substring(pos, pos + 2));
+                if (config) aiLen = 2;
+            }
+
+            if (!config) {
+                pos++;
+                continue;
+            }
+
+            pos += aiLen;
+
+            if (config.variable) {
+                // Per campi variabili, cerca il prossimo AI
+                let end = rawData.length - pos;
+
+                for (let i = 1; i <= rawData.length - pos; i++) {
+                    const checkPos = pos + i;
+
+                    // Controlla se inizia un nuovo AI
+                    if (checkPos + 3 <= rawData.length &&
+                        rawData.substring(checkPos, checkPos + 3) === '310' &&
+                        checkPos + 4 <= rawData.length &&
+                        rawData[checkPos + 3] >= '0' &&
+                        rawData[checkPos + 3] <= '9') {
+                        end = i;
+                        break;
+                    }
+
+                    if (checkPos + 4 <= rawData.length && AI_MAP.has(rawData.substring(checkPos, checkPos + 4))) {
+                        end = i;
+                        break;
+                    }
+
+                    if (checkPos + 2 <= rawData.length && AI_MAP.has(rawData.substring(checkPos, checkPos + 2))) {
+                        end = i;
+                        break;
+                    }
+                }
+
+                result[config.field] = rawData.substring(pos, pos + end);
+                pos += end;
+
+            } else if (config.length) {
+                if (pos + config.length > rawData.length) break;
+
+                const value = rawData.substring(pos, pos + config.length);
+
+                if (decimals !== undefined) {
+                    result[config.field] = parseInt(value) / Math.pow(10, decimals);
+                    result.weightDecimals = decimals;
+                } else {
+                    result[config.field] = value;
+                }
+
+                pos += config.length;
+            }
         }
-        
-        // Esempio: barcode di 6 cifre
-        if (/^\d{6}$/.test(data)) {
-            return data;
-        }
-        
-        return null;
+
+        return result;
     }
+
 
     /**
      * Aggiunge un nuovo handler personalizzato

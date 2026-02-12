@@ -24,17 +24,15 @@ const crude_scorta = ({ scorta, prodotto, onPress }) => {
                         <View style={styles.stockRow}>
                             <Text style={styles.stockLabel}>Totale:</Text>
                             <Text style={styles.stockValue}>
-                                {scorta.quantitaTotale || 0}
+                                {scorta.quantitaTotale ? scorta.quantitaTotale.toFixed(3) : '0.000'} kg
                             </Text>
                         </View>
-                        
                         <View style={styles.stockRow}>
                             <Text style={styles.stockLabel}>Scarto:</Text>
                             <Text style={styles.stockValue}>
-                                {scorta.quantitaScarto || 0}
+                                {scorta.quantitaScarto ? scorta.quantitaScarto.toFixed(3) : '0.000'} kg
                             </Text>
                         </View>
-                        
                         <View style={styles.stockDetails}>
                             <View style={styles.lineaGroup}>
                                 <Text style={styles.lineaLabel}>Linea</Text>
@@ -42,32 +40,29 @@ const crude_scorta = ({ scorta, prodotto, onPress }) => {
                                     <View style={styles.stockItem}>
                                         <Text style={styles.stockDetailLabel}>Quantità</Text>
                                         <Text style={styles.stockDetailValue}>
-                                            {scorta.quantitaInLinea || 0}
+                                            {scorta.quantitaInLinea ? scorta.quantitaInLinea.toFixed(3) : '0.000'} kg
                                         </Text>
                                     </View>
                                 </View>
                             </View>
-                            
                             <View style={styles.cellaGroup}>
                                 <Text style={styles.cellaLabel}>Cella</Text>
                                 <View style={styles.cellaContainer}>
                                     <View style={styles.stockItem}>
                                         <Text style={styles.stockDetailLabel}>Sigillato</Text>
                                         <Text style={styles.stockDetailValue}>
-                                            {scorta.quantitaInMagazzinoSigillato || 0}
+                                            {scorta.quantitaInMagazzinoSigillato ? scorta.quantitaInMagazzinoSigillato.toFixed(3) : '0.000'} kg
                                         </Text>
                                     </View>
-                                    
                                     <View style={styles.stockItem}>
                                         <Text style={styles.stockDetailLabel}>Aperto</Text>
                                         <Text style={styles.stockDetailValue}>
-                                            {scorta.quantitaInMagazzinoAperto || 0}
+                                            {scorta.quantitaInMagazzinoAperto ? scorta.quantitaInMagazzinoAperto.toFixed(3) : '0.000'} kg
                                         </Text>
                                     </View>
                                 </View>
                             </View>
                         </View>
-                        
                         <View style={styles.editHint}>
                             <Ionicons name="create-outline" size={18} color="#2C5F2D" />
                             <Text style={styles.editHintText}>Tocca per modificare</Text>

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { CameraView, Camera } from 'expo-camera';
+import { GS1Data } from '../types/BarcodeTypes';
 
 interface BarcodeReaderProps {
     tipoScorta?: string;
-    onBarcodeScanned?: (data: string, type: string) => void;
+    onBarcodeScanned?: (data: string|GS1Data, type: string) => void;
 }
 
 export default function BarcodeReader({ tipoScorta, onBarcodeScanned }: BarcodeReaderProps) {

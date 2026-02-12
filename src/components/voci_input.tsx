@@ -46,19 +46,18 @@ const VociInput: React.FC<VociInputProps> = ({
 
     const getPesoNetto = (index: number) => {
         const voce = voci[index];
-        const pesoLordo = parseFloat(voce.peso) || 0;
-        
+        // Accetta sia virgola che punto come separatore decimale
+        const pesoLordo = parseFloat((voce.peso || '').replace(',', '.')) || 0; // già in kg
         if (!usaTara || !voce.taraId) {
             return pesoLordo;
         }
-        
         const taraSelezionata = tare.find(t => t.id === voce.taraId);
         if (!taraSelezionata) {
             return pesoLordo;
         }
-        
-        // Sottrai la tara (tutto in grammi)
-        return Math.max(0, pesoLordo - taraSelezionata.weight);
+        // taraSelezionata.weight è in grammi, converti in kg
+        const taraKg = (taraSelezionata.weight || 0) / 1000;
+        return Math.max(0, pesoLordo - taraKg);
     };
 
     const openBarcodeScanner = () => {
@@ -71,7 +70,7 @@ const VociInput: React.FC<VociInputProps> = ({
         if (peso) {
             // Inserisci il peso nell'ultima voce
             const lastIndex = voci.length - 1;
-            onAggiorna(lastIndex, 'peso', peso);
+            onAggiorna(lastIndex, 'peso', typeof peso === 'string' ? peso : JSON.stringify(peso.weightKg));
             
             // Aggiungi automaticamente una nuova voce
             setTimeout(() => {
@@ -88,8 +87,8 @@ const VociInput: React.FC<VociInputProps> = ({
     const getTaraLabel = (taraId: string) => {
         if (!taraId) return 'Seleziona';
         const tara = tare.find(t => t.id === taraId);
-        return tara ? `${tara.name} (-${tara.weight}g)` : 'Seleziona';
-    };
+        return tara ? `${tara.name} (-${(tara.weight/1000).toFixed(3)}kg)` : 'Seleziona';
+    };  
 
     const openTaraPicker = (index: number) => {
         setTempTaraId(voci[index].taraId || '');
@@ -111,7 +110,7 @@ const VociInput: React.FC<VociInputProps> = ({
                     <Text style={styles.vociTitle}>{titolo}</Text>
                 </View>
                 <View style={styles.totaleBadge}>
-                    <Text style={styles.totaleText}>{totale.toFixed(2)}</Text>
+                    <Text style={styles.totaleText}>{totale.toFixed(3)}</Text>
                 </View>
             </View>
             
@@ -159,13 +158,13 @@ const VociInput: React.FC<VociInputProps> = ({
                                 <Text style={styles.moltiplicatore}>×</Text>
                                 
                                 <View style={styles.inputWrapper}>
-                                    <Text style={styles.inputLabel}>Peso</Text>
+                                    <Text style={styles.inputLabel}>Peso (kg)</Text>
                                     <TextInput
                                         style={[styles.input, styles.inputSmall]}
                                         value={voce.peso}
                                         onChangeText={(val) => onAggiorna(index, 'peso', val)}
                                         keyboardType="decimal-pad"
-                                        placeholder="0"
+                                        placeholder="0.000"
                                         placeholderTextColor="#999"
                                     />
                                 </View>
@@ -174,7 +173,7 @@ const VociInput: React.FC<VociInputProps> = ({
                                     <View style={styles.risultatoBox}>
                                         <Text style={styles.risultatoLabel}>=</Text>
                                         <Text style={styles.risultatoValue}>
-                                            {((parseFloat(voce.numScatole) || 0) * getPesoNetto(index)).toFixed(2)}
+                                            {((parseFloat((voce.numScatole || '').replace(',', '.')) || 0) * getPesoNetto(index)).toFixed(3)}
                                         </Text>
                                     </View>
                                 )}
@@ -199,7 +198,7 @@ const VociInput: React.FC<VociInputProps> = ({
                                     <View style={styles.risultatoBox}>
                                         <Text style={styles.risultatoLabel}>=</Text>
                                         <Text style={styles.risultatoValue}>
-                                            {((parseFloat(voce.numScatole) || 0) * getPesoNetto(index)).toFixed(2)}
+                                            {((parseFloat((voce.numScatole || '').replace(',', '.')) || 0) * getPesoNetto(index)).toFixed(3)}
                                         </Text>
                                     </View>
                                 </View>
@@ -280,7 +279,7 @@ const VociInput: React.FC<VociInputProps> = ({
                             {tare.map((t) => (
                                 <Picker.Item 
                                     key={t.id} 
-                                    label={`${t.name} (-${t.weight}g)`} 
+                                    label={`${t.name} (-${(t.weight/1000).toFixed(3)}kg)`} 
                                     value={t.id} 
                                 />
                             ))}
