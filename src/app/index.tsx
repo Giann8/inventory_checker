@@ -23,45 +23,8 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
   const [hasUnsynced, setHasUnsynced] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [isInitialSync, setIsInitialSync] = useState(!hasInitialSyncOccurred);
-  const [currentTime, setCurrentTime] = useState(Date.now());
 
   useEffect(() => {
-    if (hasInitialSyncOccurred) {
-      setIsInitialSync(false);
-      return;
-    }
-    
-    const initialSync = async () => {
-      setIsInitialSync(true);
-      const startTime = Date.now();
-      
-      try {
-        if (isOnline) {
-          console.log('Sincronizzazione iniziale in corso...');
-          await syncWithSupabase();
-        }
-        const unsynced = await checkUnsyncedChanges();
-        setHasUnsynced(unsynced);
-      } catch (error) {
-        console.log('Errore nella sincronizzazione iniziale:', error);
-      } finally {
-        const elapsedTime = Date.now() - startTime;
-        const minLoadingTime = 1500;
-        const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
-        
-        setTimeout(() => {
-          setIsInitialSync(false);
-          hasInitialSyncOccurred = true;
-        }, remainingTime);
-      }
-    };
-    
-    initialSync();
-  }, []);
-
-  useEffect(() => {
-    if (isInitialSync) return;
     
     const checkSync = async () => {
       try {
@@ -81,17 +44,8 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
     const interval = setInterval(checkSync, 300000);
     
     return () => clearInterval(interval);
-  }, [isOnline, isInitialSync]);
+  }, [isOnline]);
 
-  useEffect(() => {
-    if (isInitialSync) return;
-    
-    const timer = setInterval(() => {
-      setCurrentTime(Date.now());
-    }, 1000);
-    
-    return () => clearInterval(timer);
-  }, [isInitialSync]);
 
   // Calcola secondi rimanenti basandosi sul timestamp
   const getSecondsUntilSync = () => {
@@ -109,6 +63,8 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
     return () => unsubscribe();
   }, []);
 
+
+  //Controllo aggiornamenti alla chiusura dell'app
   useEffect(() => {
     const subscription = AppState.addEventListener('change', async (nextAppState) => {
       if (nextAppState === 'background' || nextAppState === 'inactive') {
@@ -149,18 +105,6 @@ const HomeScreenCrude = ({ productCount, scorteOggi, turnoAttuale, differenzeTur
       }, 2000);
     }
   };
-
-  if (isInitialSync) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#2C5F2D" />
-        <Text style={styles.loadingText}>Sincronizzazione con il database...</Text>
-        {!isOnline && (
-          <Text style={styles.offlineText}>Modalità Offline</Text>
-        )}
-      </View>
-    );
-  }
 
   return (
     <View style={styles.wrapper}>
@@ -253,19 +197,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
-  loadingContainer: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 20,
-  },
-  loadingText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2C5F2D',
-    marginTop: 20,
-  },
+
   offlineText: {
     fontSize: 14,
     color: '#FF9800',
