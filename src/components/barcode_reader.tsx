@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { CameraView, Camera } from 'expo-camera';
 import { GS1Data } from '../types/BarcodeTypes';
+import { theme } from '../theme';
 
 interface BarcodeReaderProps {
     tipoScorta?: string;
@@ -120,10 +121,10 @@ export default function BarcodeReader({ tipoScorta, onBarcodeScanned }: BarcodeR
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: theme.colors.background,
     },
     header: {
-        backgroundColor: '#2C5F2D', // Verde logistico
+        backgroundColor: theme.colors.primary,
         paddingTop: 60,
         paddingBottom: 20,
         paddingHorizontal: 20,
@@ -132,20 +133,21 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: '700',
-        color: '#FFFFFF',
+        color: theme.colors.surface,
         marginBottom: 8,
     },
     subtitle: {
         fontSize: 16,
-        color: '#E8F5E8',
+        color: theme.colors.surface,
         textAlign: 'center',
+        opacity: 0.85,
     },
     cameraContainer: {
         flex: 1,
         margin: 20,
         borderRadius: 20,
         overflow: 'hidden',
-        backgroundColor: '#000',
+        backgroundColor: theme.colors.background,
     },
     camera: {
         flex: 1,
@@ -163,23 +165,23 @@ const styles = StyleSheet.create({
         width: 250,
         height: 250,
         borderWidth: 3,
-        borderColor: '#4A7C59',
+        borderColor: theme.colors.primary,
         borderRadius: 20,
         backgroundColor: 'transparent',
     },
     bottomContainer: {
         padding: 20,
-        backgroundColor: '#fff',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        shadowColor: '#000',
+        backgroundColor: theme.colors.surface,
+        borderTopLeftRadius: theme.borderRadius.lg,
+        borderTopRightRadius: theme.borderRadius.lg,
+        shadowColor: theme.colors.textPrimary,
         shadowOffset: { width: 0, height: -2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 5,
+        shadowOpacity: theme.shadows.md.shadowOpacity,
+        shadowRadius: theme.shadows.md.shadowRadius,
+        elevation: theme.shadows.md.elevation,
     },
     scanAgainButton: {
-        backgroundColor: '#2C5F2D',
+        backgroundColor: theme.colors.primary,
         borderRadius: 12,
         paddingVertical: 16,
         paddingHorizontal: 24,
@@ -189,10 +191,11 @@ const styles = StyleSheet.create({
     },
     scanAgainIcon: {
         fontSize: 20,
-        marginRight: 10,
+        marginRight: theme.spacing.sm,
+        color: theme.colors.surface,
     },
     scanAgainText: {
-        color: '#FFFFFF',
+        color: theme.colors.surface,
         fontSize: 16,
         fontWeight: '600',
         textTransform: 'uppercase',
@@ -202,39 +205,40 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f8f9fa',
+        backgroundColor: theme.colors.background,
         padding: 40,
     },
     messageIcon: {
         fontSize: 48,
-        marginBottom: 16,
+        marginBottom: theme.spacing.md,
+        color: theme.colors.primary,
     },
     messageText: {
-        fontSize: 18,
-        color: '#495057',
+        color: theme.colors.primary,
         textAlign: 'center',
     },
     errorContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fff5f5',
+        backgroundColor: theme.colors.background,
         padding: 40,
     },
     errorIcon: {
         fontSize: 48,
         marginBottom: 16,
+        color: theme.colors.danger,
     },
     errorText: {
-        fontSize: 18,
-        color: '#dc3545',
+        color: theme.colors.danger,
         textAlign: 'center',
         marginBottom: 8,
         fontWeight: '600',
     },
     errorSubtext: {
         fontSize: 14,
-        color: '#6c757d',
+        color: theme.colors.danger,
         textAlign: 'center',
+        opacity: 0.7,
     },
 });

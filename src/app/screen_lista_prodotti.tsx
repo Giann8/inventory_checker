@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, FlatList, Alert } from 'react-native';
+import { theme } from '../theme';
 import database from '../db';
 import React from 'react';
 import { router } from 'expo-router';
@@ -80,39 +81,39 @@ const ScorteGiornaliereScreenBase = ({ prodotti }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: theme.colors.background,
     },
     header: {
-        backgroundColor: '#fff',
+        backgroundColor: theme.colors.surface,
         paddingTop: 50,
         paddingBottom: 20,
-        paddingHorizontal: 16,
-        shadowColor: '#000',
+        paddingHorizontal: theme.spacing.md,
+        shadowColor: theme.colors.textPrimary,
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowOpacity: theme.shadows.md.shadowOpacity,
+        shadowRadius: theme.shadows.md.shadowRadius,
+        elevation: theme.shadows.md.elevation,
         zIndex: 1,
     },
     title: {
         fontSize: 24,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.textPrimary,
         textAlign: 'center',
-        marginBottom: 16,
+        marginBottom: theme.spacing.md,
     },
     listContainer: {
-        paddingHorizontal: 8,
-        paddingVertical: 16,
+        paddingHorizontal: theme.spacing.sm,
+        paddingVertical: theme.spacing.md,
     },
     row: {
         justifyContent: 'space-between',
-        paddingHorizontal: 8,
+        paddingHorizontal: theme.spacing.sm,
     },
     cardContainer: {
         flex: 1,
         maxWidth: '48%',
-        marginBottom: 16,
+        marginBottom: theme.spacing.md,
     },
     
 });

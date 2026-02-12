@@ -1,4 +1,5 @@
 import React from 'react';
+import { theme } from '../theme';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 interface DateNavigationBarProps {
@@ -91,7 +92,7 @@ const DateNavigationBar: React.FC<DateNavigationBarProps> = ({
 
       {!isToday() && (
         <TouchableOpacity style={styles.todayButton} onPress={goToToday}>
-          <Text style={styles.todayButtonText}><Ionicons name="calendar" size={16} color="#FFFFFF" /> Vai a Oggi</Text>
+          <Text style={styles.todayButtonText}><Ionicons name="calendar" size={16} color={theme.colors.surface} /> Vai a Oggi</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -100,7 +101,7 @@ const DateNavigationBar: React.FC<DateNavigationBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#2C5F2D',
+    backgroundColor: theme.colors.primary,
     paddingTop: 50,
     paddingBottom: 12,
     paddingHorizontal: 16,
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: theme.colors.surface + '33',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   arrowText: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     fontSize: 20,
     fontWeight: 'bold',
   },
@@ -135,31 +136,31 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   dayName: {
-    color: '#B8E6B8',
+    color: theme.colors.secondary,
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 4,
   },
   dateText: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     fontSize: 20,
     fontWeight: 'bold',
   },
   shiftBadge: {
-    backgroundColor: '#FFC107',
+    backgroundColor: theme.colors.warning,
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
     marginTop: 8,
   },
   shiftText: {
-    color: '#000',
+    color: theme.colors.textPrimary,
     fontSize: 11,
     fontWeight: '700',
     textTransform: 'uppercase',
   },
   todayButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: theme.colors.surface + '26',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 20,
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   todayButtonText: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     fontSize: 13,
     fontWeight: '600',
   },

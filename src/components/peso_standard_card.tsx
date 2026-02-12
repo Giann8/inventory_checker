@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { theme } from '../theme';
 import { withObservables } from "@nozbe/watermelondb/react";
 import PesoStandard from "../model/peso_standard";
 
@@ -15,28 +16,29 @@ const crudePesoStandardCard = ({ pesoStandard }: { pesoStandard: PesoStandard })
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#fff',
-        padding: 15,
-        marginVertical: 8,
-        borderRadius: 8,
-        shadowColor: '#000',
+        backgroundColor: theme.colors.surface,
+        padding: theme.spacing.md,
+        marginVertical: theme.spacing.sm,
+        borderRadius: theme.borderRadius.md,
+        shadowColor: theme.colors.textPrimary,
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowOpacity: theme.shadows.md.shadowOpacity,
+        shadowRadius: theme.shadows.md.shadowRadius,
+        elevation: theme.shadows.md.elevation,
     },
     peso: {
         fontSize: 18,
         fontWeight: 'bold',
+        color: theme.colors.primary,
     },
     descrizione: {
         fontSize: 14,
-        color: '#555',
+        color: theme.colors.textSecondary,
     },
     default:    {
-        marginTop: 5,
+        marginTop: theme.spacing.xs,
         fontSize: 12,
-        color: '#2C5F2D',
+        color: theme.colors.primary,
         fontWeight: '600',
     },
 });

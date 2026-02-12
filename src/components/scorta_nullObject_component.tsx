@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Product from '../model/product';
-
+import { theme } from '../theme';
 const ScortaNullObjectComponent: React.FC<{ prodotto: Product }> = ({ prodotto }) => {
   return (
     <View style={styles.card}>
@@ -60,46 +60,46 @@ const ScortaNullObjectComponent: React.FC<{ prodotto: Product }> = ({ prodotto }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 10,
-    shadowColor: '#000',
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
+    shadowColor: theme.colors.textPrimary,
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
-    elevation: 2,
+    shadowOpacity: theme.shadows.sm.shadowOpacity,
+    shadowRadius: theme.shadows.sm.shadowRadius,
+    elevation: theme.shadows.sm.elevation,
   },
   productName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#2C5F2D',
-    marginBottom: 8,
+    color: theme.colors.primary,
+    marginBottom: theme.spacing.xs,
   },
   stockInfo: {
-    marginTop: 8,
+    marginTop: theme.spacing.xs,
   },
   stockRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 6,
+    paddingVertical: theme.spacing.xs,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-    marginBottom: 8,
+    borderBottomColor: theme.colors.border,
+    marginBottom: theme.spacing.xs,
   },
   stockLabel: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.textPrimary,
   },
   stockValue: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#2C5F2D',
+    color: theme.colors.primary,
   },
   stockValueZero: {
-    color: '#999',
+    color: theme.colors.textDisabled,
     fontWeight: '400',
   },
   stockDetails: {
@@ -119,19 +119,19 @@ const styles = StyleSheet.create({
   },
   lineaLabel: {
     fontSize: 10,
-    color: '#666',
+    color: theme.colors.textSecondary,
     fontWeight: '600',
-    marginBottom: 4,
+    marginBottom: theme.spacing.xs,
     textTransform: 'uppercase',
   },
   lineaContainer: {
     flexDirection: 'row',
     borderWidth: 1.5,
-    borderColor: '#2C5F2D',
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    gap: 8,
+    borderColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.md,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.xs,
+    gap: theme.spacing.xs,
   },
   cellaGroup: {
     flex: 2,
@@ -139,33 +139,33 @@ const styles = StyleSheet.create({
   },
   cellaLabel: {
     fontSize: 10,
-    color: '#666',
+    color: theme.colors.textSecondary,
     fontWeight: '600',
-    marginBottom: 4,
+    marginBottom: theme.spacing.xs,
     textTransform: 'uppercase',
   },
   cellaContainer: {
     flexDirection: 'row',
     borderWidth: 1.5,
-    borderColor: '#2C5F2D',
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    gap: 8,
+    borderColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.md,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.xs,
+    gap: theme.spacing.xs,
   },
   stockDetailLabel: {
     fontSize: 11,
-    color: '#999',
+    color: theme.colors.textDisabled,
     textTransform: 'uppercase',
-    marginBottom: 4,
+    marginBottom: theme.spacing.xs,
   },
   stockDetailValue: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.textPrimary,
   },
   stockDetailValueZero: {
-    color: '#BBB',
+    color: theme.colors.textDisabled,
     fontWeight: '400',
   },
 });

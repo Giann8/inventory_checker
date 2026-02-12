@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { withObservables } from "@nozbe/watermelondb/react";
-
+import { theme } from '../theme';
 /**
  * Card piccola per visualizzare informazioni prodotto
  * @param {Object} prodotto - Il prodotto da visualizzare
@@ -42,21 +42,18 @@ const crude_prodotto = ({ prodotto, scorta, onPress }) => {
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        padding: 12,
-        marginVertical: 4,
-        marginHorizontal: 4,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 3.84,
-        elevation: 5, // Android shadow
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.borderRadius.md,
+        padding: theme.spacing.md,
+        marginVertical: theme.spacing.xs,
+        marginHorizontal: theme.spacing.xs,
+        shadowColor: theme.colors.textPrimary,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: theme.shadows.md.shadowOpacity,
+        shadowRadius: theme.shadows.md.shadowRadius,
+        elevation: theme.shadows.md.elevation,
         borderWidth: 1,
-        borderColor: '#f0f0f0',
+        borderColor: theme.colors.border,
         flex: 1,
     },
     header: {
@@ -65,12 +62,12 @@ const styles = StyleSheet.create({
     productName: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
-        marginBottom: 4,
+        color: theme.colors.primary,
+        marginBottom: theme.spacing.xs,
     },
     productType: {
         fontSize: 12,
-        color: '#666',
+        color: theme.colors.textSecondary,
         textTransform: 'capitalize',
     },
     stockInfo: {
@@ -80,21 +77,21 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 8,
+        marginBottom: theme.spacing.xs,
         paddingVertical: 4,
-        backgroundColor: '#f8f9fa',
-        borderRadius: 6,
+        backgroundColor: theme.colors.background,
+        borderRadius: theme.borderRadius.sm,
         paddingHorizontal: 8,
     },
     stockLabel: {
         fontSize: 16,
         fontWeight: '500',
-        color: '#495057',
+        color: theme.colors.textPrimary,
     },
     stockValue: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#28a745',
+        color: theme.colors.inStock,
     },
     stockDetails: {
         flexDirection: 'row',
@@ -107,37 +104,37 @@ const styles = StyleSheet.create({
     },
     stockDetailLabel: {
         fontSize: 12,
-        color: '#6c757d',
+        color: theme.colors.textSecondary,
         marginBottom: 2,
     },
     stockDetailValue: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#495057',
+        color: theme.colors.textPrimary,
     },
     footer: {
-        marginTop: 8,
-        paddingTop: 8,
+        marginTop: theme.spacing.xs,
+        paddingTop: theme.spacing.xs,
         borderTopWidth: 1,
-        borderTopColor: '#e9ecef',
+        borderTopColor: theme.colors.border,
     },
     lastUpdate: {
         fontSize: 12,
-        color: '#6c757d',
+        color: theme.colors.textSecondary,
         textAlign: 'right',
     },
     noStockInfo: {
-        padding: 12,
-        backgroundColor: '#f8f9fa',
-        borderRadius: 6,
+        padding: theme.spacing.md,
+        backgroundColor: theme.colors.background,
+        borderRadius: theme.borderRadius.sm,
         borderWidth: 1,
-        borderColor: '#dee2e6',
+        borderColor: theme.colors.border,
         borderStyle: 'dashed',
-        marginBottom: 8,
+        marginBottom: theme.spacing.xs,
     },
     noStockText: {
         fontSize: 14,
-        color: '#6c757d',
+        color: theme.colors.textSecondary,
         fontStyle: 'italic',
         textAlign: 'center',
     },

@@ -1,9 +1,10 @@
 import { ActivityIndicator, AppState, StyleSheet, Text, View } from 'react-native';
+import { theme } from '../theme';
 
 export default function LoadingScreenUpdates({ message }: { message: string }) {
     return (
         <View style={styles.container}>
-            <ActivityIndicator size="large" color="#2C5F2D" />
+            <ActivityIndicator size="large" color={theme.colors.primary} />
             <Text style={styles.loadingText}>{message}</Text>
         </View>
     );
@@ -14,17 +15,17 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: theme.colors.surface,
     },
     loadingText: {
-        marginTop: 20,
+        marginTop: theme.spacing.lg,
         fontSize: 16,
-        color: '#333',
+        color: theme.colors.textPrimary,
     },
     offlineText: {
-        marginTop: 10,
+        marginTop: theme.spacing.sm,
         fontSize: 14,
-        color: '#999',
+        color: theme.colors.textSecondary,
     },
     lineaGroup: {
         flex: 2,
@@ -32,19 +33,19 @@ const styles = StyleSheet.create({
     },
     lineaLabel: {
         fontSize: 10,
-        color: '#666',
+        color: theme.colors.textSecondary,
         fontWeight: '600',
-        marginBottom: 4,
+        marginBottom: theme.spacing.xs,
         textTransform: 'uppercase',
     },
     lineaContainer: {
         flexDirection: 'row',
         borderWidth: 1.5,
-        borderColor: '#2C5F2D',
-        borderRadius: 8,
-        paddingVertical: 8,
-        paddingHorizontal: 4,
-        gap: 8,
+        borderColor: theme.colors.primary,
+        borderRadius: theme.borderRadius.md,
+        paddingVertical: theme.spacing.sm,
+        paddingHorizontal: theme.spacing.xs,
+        gap: theme.spacing.xs,
     },
     cellaGroup: {
         flex: 3,
@@ -52,9 +53,9 @@ const styles = StyleSheet.create({
     },
     cellaLabel: {
         fontSize: 10,
-        color: '#666',
+        color: theme.colors.textSecondary,
         fontWeight: '600',
-        marginBottom: 4,
+        marginBottom: theme.spacing.xs,
         textTransform: 'uppercase',
     },
     cellaContainer: {

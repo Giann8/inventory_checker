@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Alert, Text } from 'react-native';
+import { theme } from '../theme';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { withObservables } from '@nozbe/watermelondb/react';
 import { Q } from '@nozbe/watermelondb';
@@ -193,24 +194,24 @@ export default enhance(AggiungiScorteScreenCrude);
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: theme.colors.background,
     },
     header: {
-        backgroundColor: '#2C5F2D',
+        backgroundColor: theme.colors.primary,
         paddingTop: 50,
         paddingBottom: 20,
         paddingHorizontal: 20,
         alignItems: 'center',
-        shadowColor: '#000',
+        shadowColor: theme.colors.textPrimary,
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 4,
+        shadowOpacity: theme.shadows.md.shadowOpacity,
+        shadowRadius: theme.shadows.md.shadowRadius,
+        elevation: theme.shadows.md.elevation,
     },
     title: {
         fontSize: 24,
         fontWeight: '700',
-        color: '#FFFFFF',
+        color: theme.colors.surface,
     },
     buttonsContainer: {
         flex: 1,
@@ -219,23 +220,23 @@ const styles = StyleSheet.create({
         gap: 20,
     },
     bigButton: {
-        backgroundColor: '#2C5F2D',
+        backgroundColor: theme.colors.primary,
         borderRadius: 16,
         padding: 30,
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: 180,
-        shadowColor: '#000',
+        shadowColor: theme.colors.textPrimary,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 8,
         elevation: 6,
     },
     bigButtonSecondary: {
-        backgroundColor: '#4A7C59',
+        backgroundColor: theme.colors.secondary,
     },
     bigButtonText: {
-        color: '#FFFFFF',
+        color: theme.colors.surface,
         fontSize: 20,
         fontWeight: '700',
         textAlign: 'center',

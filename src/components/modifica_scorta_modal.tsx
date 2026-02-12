@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { theme } from '../theme';
 import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, Alert, Switch } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -110,7 +111,7 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
     const calcolaTotale = (voci: { numScatole: string; peso: string; taraId?: string }[]) => {
         return voci.reduce((totale, voce) => {
             const num = parseFloat(voce.numScatole) || 0;
-            let peso = parseFloat(voce.peso) || 0;
+            let peso = parseFloat(voce.peso.replace(',', '.')) || 0;
             
             // Sottrai il peso della tara se presente (tutto in grammi)
             if (voce.taraId) {
@@ -119,7 +120,7 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
                     peso = Math.max(0, peso - taraSelezionata.weight);
                 }
             }
-            
+            console.log(`Calcolo voce: numScatole=${num}, peso=${peso}, totaleParziale=${totale + (num * peso)}`);
             return totale + (num * peso);
         }, 0);
     };
@@ -163,7 +164,7 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
                     <View style={styles.modalHeader}>
                         <Text style={styles.modalTitle}>{title || (scorta ? 'Modifica Scorta' : 'Aggiungi Scorta')}</Text>
                         <TouchableOpacity onPress={onClose}>
-                            <Ionicons name="close" size={28} color="#333" />
+                            <Ionicons name="close" size={28} color={theme.colors.textPrimary} />
                         </TouchableOpacity>
                     </View>
 
@@ -182,7 +183,7 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
                                             year: 'numeric' 
                                         })}
                                     </Text>
-                                    <Ionicons name="calendar-outline" size={20} color="#2C5F2D" />
+                                    <Ionicons name="calendar-outline" size={20} color={theme.colors.primary} />
                                 </TouchableOpacity>
                                 
                                 {showDatePickerInternal && (
@@ -220,14 +221,14 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
                             <View style={styles.switchContainer}>
                                 <Text style={styles.label}>Turno</Text>
                                 <View style={styles.switchRow}>
-                                    <Text style={styles.switchLabel}>Sera <Ionicons name="moon" size={20} color="#2C5F2D" /></Text>
+                                    <Text style={styles.switchLabel}>Sera <Ionicons name="moon" size={20} color={theme.colors.primary} /></Text>
                                     <Switch
                                         value={isMattina}
                                         onValueChange={setIsMattina}
-                                        trackColor={{ false: '#767577', true: '#2C5F2D' }}
-                                        thumbColor={isMattina ? '#4A7C59' : '#f4f3f4'}
+                                        trackColor={{ false: theme.colors.textDisabled ?? '#767577', true: theme.colors.primary }}
+                                        thumbColor={isMattina ? theme.colors.secondary : '#f4f3f4'}
                                     />
-                                    <Text style={styles.switchLabel}>Mattina <Ionicons name="sunny" size={20} color="#FFD700" /></Text>
+                                    <Text style={styles.switchLabel}>Mattina <Ionicons name="sunny" size={20} color={theme.colors.warning} /></Text>
                                 </View>
                             </View>
                         )}
@@ -242,9 +243,9 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
                                         style={styles.picker}
                                         itemStyle={styles.pickerItem}
                                     >
-                                        <Picker.Item label="Seleziona un prodotto..." value="" color="#999" />
+                                        <Picker.Item label="Seleziona un prodotto..." value="" color={theme.colors.textDisabled} />
                                         {products.map((p: Product) => (
-                                            <Picker.Item key={p.id} label={p.name} value={p.id} color="#333" />
+                                            <Picker.Item key={p.id} label={p.name} value={p.id} color={theme.colors.textPrimary} />
                                         ))}
                                     </Picker>
                                 </View>
@@ -268,7 +269,7 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
 
                         <View style={styles.totaleBox}>
                             <Text style={styles.totaleLabel}>Totale Scorta</Text>
-                            <Text style={styles.totaleValue}>{calcolaTotaleScorta().toFixed(2)}</Text>
+                            <Text style={styles.totaleValue}>{calcolaTotaleScorta().toFixed(3)}</Text>
                         </View>
 
                         <VociInput
@@ -332,15 +333,15 @@ const ScortaFormModal: React.FC<ScortaFormModalProps> = ({
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: theme.colors.background ?? 'rgba(0, 0, 0, 0.5)',
         justifyContent: 'flex-end',
     },
     modalContent: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.surface,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         maxHeight: '90%',
-        shadowColor: '#000',
+        shadowColor: theme.colors.textPrimary,
         shadowOffset: { width: 0, height: -4 },
         shadowOpacity: 0.25,
         shadowRadius: 8,
@@ -352,12 +353,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
         borderBottomWidth: 1,
-        borderBottomColor: '#E0E0E0',
+        borderBottomColor: theme.colors.border ?? '#E0E0E0',
     },
     modalTitle: {
         fontSize: 20,
         fontWeight: '700',
-        color: '#2C5F2D',
+        color: theme.colors.primary,
     },
     modalBody: {
         padding: 20,
@@ -365,17 +366,17 @@ const styles = StyleSheet.create({
     modalFooter: {
         padding: 20,
         borderTopWidth: 1,
-        borderTopColor: '#E0E0E0',
+        borderTopColor: theme.colors.border ?? '#E0E0E0',
     },
     productName: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#2C5F2D',
+        color: theme.colors.primary,
         marginBottom: 12,
         textAlign: 'center',
     },
     infoBox: {
-        backgroundColor: '#F8F9FA',
+        backgroundColor: theme.colors.border ?? '#F8F9FA',
         borderRadius: 8,
         padding: 12,
         marginBottom: 16,
@@ -384,76 +385,76 @@ const styles = StyleSheet.create({
     },
     infoText: {
         fontSize: 14,
-        color: '#666',
+        color: theme.colors.textSecondary,
         fontWeight: '500',
     },
     totaleBox: {
-        backgroundColor: '#E8F5E9',
+        backgroundColor: theme.colors.primaryLight,
         borderRadius: 12,
         padding: 16,
         marginBottom: 20,
         alignItems: 'center',
         borderWidth: 2,
-        borderColor: '#2C5F2D',
+        borderColor: theme.colors.primary,
     },
     totaleLabel: {
         fontSize: 14,
-        color: '#666',
+        color: theme.colors.textSecondary,
         fontWeight: '600',
         marginBottom: 4,
     },
     totaleValue: {
         fontSize: 32,
         fontWeight: 'bold',
-        color: '#2C5F2D',
+        color: theme.colors.primary,
     },
     saveButton: {
-        backgroundColor: '#2C5F2D',
+        backgroundColor: theme.colors.primary,
         borderRadius: 12,
         padding: 16,
         alignItems: 'center',
     },
     saveButtonDisabled: {
-        backgroundColor: '#A0A0A0',
+        backgroundColor: theme.colors.textDisabled ?? '#A0A0A0',
         opacity: 0.6,
     },
     saveButtonText: {
-        color: '#FFFFFF',
+        color: theme.colors.surface,
         fontSize: 18,
         fontWeight: '700',
     },
     label: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.textPrimary,
         marginBottom: 8,
         marginTop: 12,
     },
     dateButton: {
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.background ?? '#F5F5F5',
         borderRadius: 8,
         padding: 14,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         borderWidth: 1,
-        borderColor: '#E0E0E0',
+        borderColor: theme.colors.border ?? '#E0E0E0',
         marginBottom: 12,
     },
     dateButtonText: {
         fontSize: 16,
-        color: '#333',
+        color: theme.colors.textPrimary,
     },
     datePickerWrapper: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.surface,
         borderRadius: 12,
         padding: 16,
         marginBottom: 16,
         borderWidth: 2,
-        borderColor: '#2C5F2D',
+        borderColor: theme.colors.primary,
     },
     datePicker: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.surface,
         borderRadius: 8,
     },
     datePickerButtons: {
@@ -468,22 +469,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     datePickerButtonCancel: {
-        backgroundColor: '#F5F5F5',
+        backgroundColor: theme.colors.background ?? '#F5F5F5',
         borderWidth: 1,
-        borderColor: '#E0E0E0',
+        borderColor: theme.colors.border ?? '#E0E0E0',
     },
     datePickerButtonConfirm: {
-        backgroundColor: '#2C5F2D',
+        backgroundColor: theme.colors.primary,
     },
     datePickerButtonTextCancel: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#666',
+        color: theme.colors.textSecondary,
     },
     datePickerButtonTextConfirm: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#FFFFFF',
+        color: theme.colors.surface,
     },
     switchContainer: {
         marginTop: 12,
@@ -498,25 +499,25 @@ const styles = StyleSheet.create({
     },
     switchLabel: {
         fontSize: 16,
-        color: '#333',
+        color: theme.colors.textPrimary,
         fontWeight: '500',
     },
     pickerContainer: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.surface,
         borderRadius: 12,
         overflow: 'hidden',
         borderWidth: 2,
-        borderColor: '#2C5F2D',
+        borderColor: theme.colors.primary,
         marginBottom: 16,
     },
     picker: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.surface,
         height: 180,
         width: '100%',
     },
     pickerItem: {
         fontSize: 18,
-        color: '#333',
+        color: theme.colors.textPrimary,
     },
 });
 

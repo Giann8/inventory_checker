@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter, usePathname } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { theme } from '../theme';
 
 const NavigationFooter = () => {
   const router = useRouter();
@@ -10,27 +11,27 @@ const NavigationFooter = () => {
   const navItems = [
     {
       label: 'Home',
-      icon: <Ionicons name="home" size={24} color="#666" />,
+      icon: <Ionicons name="home" size={24} color={theme.colors.textSecondary} />,
       route: '/',
     },
     {
       label: 'Prodotti',
-      icon: <Ionicons name="cube" size={24} color="#666" />,
+      icon: <Ionicons name="cube" size={24} color={theme.colors.textSecondary} />,
       route: '/screen_lista_prodotti',
     },
     {
       label: 'Scorte',
-      icon: <Ionicons name="bar-chart-sharp" size={24} color="#666" />,
+      icon: <Ionicons name="bar-chart-sharp" size={24} color={theme.colors.textSecondary} />,
       route: '/screen_scorte_giornaliere',
     },
     {
       label: 'Tare',
-      icon: <Ionicons name="cube-outline" size={24} color="#666" />,
+      icon: <Ionicons name="cube-outline" size={24} color={theme.colors.textSecondary} />,
       route: '/screen_tare',
     },
     {
       label: 'Aggiungi',
-      icon: <Ionicons name="add-outline" size={24} color="#666" />,
+      icon: <Ionicons name="add-outline" size={24} color={theme.colors.textSecondary} />,
       route: '/aggiungi_scorte',
     },
   ];
@@ -74,12 +75,12 @@ const NavigationFooter = () => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.surface,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: theme.colors.border,
     paddingBottom: 20,
     paddingTop: 8,
-    shadowColor: '#000',
+    shadowColor: theme.colors.textPrimary,
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
@@ -92,13 +93,14 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   navItemActive: {
-    backgroundColor: '#F0F8F0',
+    backgroundColor: theme.colors.surface,
     borderRadius: 12,
     marginHorizontal: 4,
   },
   icon: {
     fontSize: 24,
     marginBottom: 4,
+    color: theme.colors.textSecondary,
     opacity: 0.6,
   },
   iconActive: {
@@ -106,11 +108,11 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 11,
-    color: '#666',
+    color: theme.colors.textSecondary,
     fontWeight: '500',
   },
   labelActive: {
-    color: '#2C5F2D',
+    color: theme.colors.textPrimary,
     fontWeight: '700',
   },
 });

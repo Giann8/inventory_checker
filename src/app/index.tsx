@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, ActivityIndicator, AppState } from 'react-native';
+import { theme } from '../theme';
 import { Link } from 'expo-router';
 import { withObservables } from '@nozbe/watermelondb/react';
 import database from '../db';
@@ -221,28 +222,28 @@ const secondsLeft = useCountdown(lastAutoSyncTime, 300);
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: theme.colors.background,
   },
 
   offlineText: {
     fontSize: 14,
-    color: '#FF9800',
+    color: theme.colors.warning,
     marginTop: 10,
   },
   header: {
-    backgroundColor: '#2C5F2D',
+    backgroundColor: theme.colors.primary,
     paddingTop: 50,
     paddingBottom: 15,
     paddingHorizontal: 20,
-    shadowColor: '#000',
+    shadowColor: theme.colors.textPrimary,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
+    shadowOpacity: theme.shadows.md.shadowOpacity,
+    shadowRadius: theme.shadows.md.shadowRadius,
+    elevation: theme.shadows.md.elevation,
   },
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: theme.colors.background,
   },
   contentContainer: {
     padding: 20,
@@ -250,27 +251,27 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     textAlign: 'center',
   },
   statsContainer: {
     marginBottom: 40,
   },
   statCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 15,
-    shadowColor: '#000',
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
+    padding: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
+    shadowColor: theme.colors.textPrimary,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOpacity: theme.shadows.md.shadowOpacity,
+    shadowRadius: theme.shadows.md.shadowRadius,
+    elevation: theme.shadows.md.elevation,
     alignItems: 'center',
   },
   statLabel: {
     fontSize: 14,
-    color: '#666',
+    color: theme.colors.textSecondary,
     marginBottom: 8,
     textTransform: 'uppercase',
     fontWeight: '600',
@@ -278,22 +279,22 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#2C5F2D',
+    color: theme.colors.primary,
   },
   statSubtext: {
     fontSize: 12,
-    color: '#999',
+    color: theme.colors.textDisabled ?? '#999',
     marginTop: 4,
   },
   statCardWarning: {
     borderWidth: 2,
-    borderColor: '#FF9800',
+    borderColor: theme.colors.warning,
   },
   linksContainer: {
     gap: 12,
   },
   link: {
-    backgroundColor: '#2C5F2D',
+    backgroundColor: theme.colors.primary,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -302,10 +303,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: theme.colors.surface,
   },
   syncBanner: {
-    backgroundColor: '#FF9800',
+    backgroundColor: theme.colors.warning,
     paddingVertical: 12,
     paddingHorizontal: 16,
     flexDirection: 'row',
@@ -313,7 +314,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   syncBannerOffline: {
-    backgroundColor: '#757575',
+    backgroundColor: theme.colors.textDisabled ?? '#757575',
   },
   syncBannerIcon: {
     fontSize: 20,
@@ -322,24 +323,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   syncBannerText: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     fontSize: 14,
     fontWeight: '600',
   },
   syncBannerSubtext: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     fontSize: 11,
     opacity: 0.9,
     marginTop: 2,
   },
   countdownBanner: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: theme.colors.success ?? '#4CAF50',
     paddingVertical: 8,
     paddingHorizontal: 16,
     alignItems: 'center',
   },
   countdownText: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
     fontSize: 12,
     fontWeight: '500',
   },

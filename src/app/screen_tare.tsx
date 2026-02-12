@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, TextInput, Modal, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { theme } from '../theme';
 import { withObservables } from '@nozbe/watermelondb/react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import database from '../db';
@@ -206,41 +207,41 @@ export default enhance(ScreenTareBase);
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: theme.colors.background,
     },
     header: {
-        backgroundColor: '#2C5F2D',
+        backgroundColor: theme.colors.primary,
         paddingTop: 50,
         paddingBottom: 20,
         paddingHorizontal: 20,
-        shadowColor: '#000',
+        shadowColor: theme.colors.textPrimary,
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 4,
+        shadowOpacity: theme.shadows.md.shadowOpacity,
+        shadowRadius: theme.shadows.md.shadowRadius,
+        elevation: theme.shadows.md.elevation,
     },
     title: {
         fontSize: 24,
         fontWeight: '700',
-        color: '#FFFFFF',
+        color: theme.colors.surface,
     },
     subtitle: {
         fontSize: 14,
-        color: '#E8F5E9',
+        color: theme.colors.primaryLight,
         marginTop: 4,
     },
     listContainer: {
         padding: 16,
     },
     card: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 12,
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.borderRadius.md,
+        padding: theme.spacing.md,
+        marginBottom: theme.spacing.sm,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        shadowColor: '#000',
+        shadowColor: theme.colors.textPrimary,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 4,
@@ -255,7 +256,7 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         borderRadius: 25,
-        backgroundColor: '#E8F5E9',
+        backgroundColor: theme.colors.primaryLight,
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 12,
@@ -266,12 +267,12 @@ const styles = StyleSheet.create({
     cardTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.textPrimary,
         marginBottom: 4,
     },
     cardWeight: {
         fontSize: 14,
-        color: '#666',
+        color: theme.colors.textSecondary,
     },
     deleteButton: {
         padding: 8,
@@ -285,12 +286,12 @@ const styles = StyleSheet.create({
     emptyText: {
         fontSize: 18,
         fontWeight: '600',
-        color: '#666',
+        color: theme.colors.textSecondary,
         marginTop: 16,
     },
     emptySubtext: {
         fontSize: 14,
-        color: '#999',
+        color: theme.colors.textDisabled ?? '#999',
         textAlign: 'center',
         marginTop: 8,
     },
@@ -301,10 +302,10 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
         borderRadius: 30,
-        backgroundColor: '#2C5F2D',
+        backgroundColor: theme.colors.primary,
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: '#000',
+        shadowColor: theme.colors.textPrimary,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -312,7 +313,7 @@ const styles = StyleSheet.create({
     },
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: theme.colors.overlay ?? 'rgba(0, 0, 0, 0.5)',
         justifyContent: 'flex-end',
     },
     modalOverlayTouchable: {
@@ -320,7 +321,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     modalContent: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.surface,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         paddingBottom: 20,
@@ -332,12 +333,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
         borderBottomWidth: 1,
-        borderBottomColor: '#E0E0E0',
+        borderBottomColor: theme.colors.inputBorder ?? '#E0E0E0',
     },
     modalTitle: {
         fontSize: 20,
         fontWeight: '700',
-        color: '#333',
+        color: theme.colors.textPrimary,
     },
     modalBody: {
         padding: 20,
@@ -349,16 +350,16 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#333',
+        color: theme.colors.textPrimary,
         marginBottom: 8,
     },
     input: {
-        backgroundColor: '#F8F9FA',
+        backgroundColor: theme.colors.inputBackground ?? '#F8F9FA',
         borderRadius: 8,
         padding: 12,
         fontSize: 16,
         borderWidth: 1,
-        borderColor: '#E0E0E0',
+        borderColor: theme.colors.inputBorder ?? '#E0E0E0',
     },
     modalFooter: {
         flexDirection: 'row',
@@ -367,21 +368,21 @@ const styles = StyleSheet.create({
     },
     cancelButton: {
         flex: 1,
-        backgroundColor: '#F8F9FA',
+        backgroundColor: theme.colors.inputBackground ?? '#F8F9FA',
         borderRadius: 8,
         paddingVertical: 14,
         alignItems: 'center',
         borderWidth: 1,
-        borderColor: '#E0E0E0',
+        borderColor: theme.colors.inputBorder ?? '#E0E0E0',
     },
     cancelButtonText: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#666',
+        color: theme.colors.textSecondary,
     },
     saveButton: {
         flex: 1,
-        backgroundColor: '#2C5F2D',
+        backgroundColor: theme.colors.primary,
         borderRadius: 8,
         paddingVertical: 14,
         alignItems: 'center',
@@ -389,6 +390,6 @@ const styles = StyleSheet.create({
     saveButtonText: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#FFFFFF',
+        color: theme.colors.surface,
     },
 });

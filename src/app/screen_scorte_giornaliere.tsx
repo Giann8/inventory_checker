@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { theme } from '../theme';
 import { withObservables } from '@nozbe/watermelondb/react';
 import database from '../db';
 import { Q } from '@nozbe/watermelondb';
@@ -68,7 +69,7 @@ const ScreenScorteGiornaliereCrude = ({
       {/* Sezione Mattino */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionIcon}><Ionicons name="sunny" size={20} color="#FFA500" /></Text>
+          <Text style={styles.sectionIcon}><Ionicons name="sunny" size={20} color={theme.colors.warning} /></Text>
           <Text style={styles.sectionTitle}>Turno Mattino</Text>
         </View>
         <View style={styles.sectionContent}>
@@ -89,7 +90,7 @@ const ScreenScorteGiornaliereCrude = ({
       {/* Sezione Sera */}
       <View style={styles.section}>
         <View style={[styles.sectionHeader, styles.sectionHeaderEvening]}>
-          <Text style={styles.sectionIcon}><Ionicons name="moon" size={20} color="#FFA500" /></Text>
+          <Text style={styles.sectionIcon}><Ionicons name="moon" size={20} color={theme.colors.warning} /></Text>
           <Text style={styles.sectionTitle}>Turno Sera</Text>
         </View>
         <View style={styles.sectionContent}>
@@ -152,7 +153,7 @@ const ScreenScorteGiornaliereWrapper = () => {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.colors.background,
   },
   container: {
     flex: 1,
@@ -163,13 +164,13 @@ const styles = StyleSheet.create({
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF3CD',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    backgroundColor: theme.colors.warning + '33',
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
     gap: 8,
   },
   sectionHeaderEvening: {
-    backgroundColor: '#D1E7FF',
+    backgroundColor: theme.colors.primaryLight,
   },
   sectionIcon: {
     fontSize: 20,
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: theme.colors.textPrimary,
   },
   sectionContent: {
     padding: 12,
@@ -188,19 +189,19 @@ const styles = StyleSheet.create({
   },
   emptySectionText: {
     fontSize: 14,
-    color: '#999',
+    color: theme.colors.textSecondary,
     fontStyle: 'italic',
   },
   scortaCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 10,
-    shadowColor: '#000',
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
+    shadowColor: theme.colors.textPrimary,
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
-    elevation: 2,
+    shadowOpacity: theme.shadows.sm.shadowOpacity,
+    shadowRadius: theme.shadows.sm.shadowRadius,
+    elevation: theme.shadows.sm.elevation,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -211,11 +212,11 @@ const styles = StyleSheet.create({
   scortaTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#2C5F2D',
+    color: theme.colors.primary,
     flex: 1,
   },
   shiftBadgeSmall: {
-    backgroundColor: '#FFF3CD',
+    backgroundColor: theme.colors.warning + '33',
     width: 28,
     height: 28,
     borderRadius: 14,
@@ -223,7 +224,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   shiftBadgeEveningSmall: {
-    backgroundColor: '#D1E7FF',
+    backgroundColor: theme.colors.primaryLight,
   },
   shiftBadgeTextSmall: {
     fontSize: 14,
@@ -237,21 +238,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 6,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    borderBottomColor: theme.colors.border,
     marginBottom: 8,
   },
   stockLabel: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.textPrimary,
   },
   stockValue: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#2C5F2D',
+    color: theme.colors.primary,
   },
   stockValueZero: {
-    color: '#999',
+    color: theme.colors.textDisabled,
   },
   stockDetails: {
     flexDirection: 'row',
@@ -264,14 +265,14 @@ const styles = StyleSheet.create({
   },
   stockDetailLabel: {
     fontSize: 11,
-    color: '#999',
+    color: theme.colors.textSecondary,
     textTransform: 'uppercase',
     marginBottom: 4,
   },
   stockDetailValue: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: theme.colors.textPrimary,
   },
 });
 

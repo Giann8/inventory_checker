@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+import { theme } from '../theme';
 import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import { useEffect } from 'react';
 import NavigationFooter from '../components/navigation_footer';
@@ -49,7 +50,7 @@ export default function Layout() {
 
   if (loadingState === 'checking-update') {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: theme.colors.background }]}> 
         <LoadingScreenUpdates message="Controllo aggiornamenti..." />
       </View>
     );
@@ -57,9 +58,9 @@ export default function Layout() {
 
   if (loadingState === 'syncing-db') {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}> 
         <ActivityIndicator size="large" color="#2C5F2D" />
-        <Text style={styles.loadingText}>Sincronizzazione con il database...</Text>
+        <Text style={[styles.loadingText, { color: theme.colors.primary }]}>Sincronizzazione con il database...</Text>
       </View>
     );
   }
@@ -87,7 +88,6 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
     justifyContent: 'center',
     alignItems: 'center',
     gap: 20,
@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#2C5F2D',
     marginTop: 20,
   }
 });
