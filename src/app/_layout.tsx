@@ -11,28 +11,30 @@ import LoadingScreenUpdates from '../components/loadingScreenUpdates';
 
 export default function Layout() {
   const [loadingState, setLoadingState] = useState<'checking-update' | 'syncing-db' | 'ready'>('checking-update');
-
   useEffect(() => {
     initApp();
-  })
+  }, []);
 
   async function initApp() {
-    try {
-      setLoadingState('checking-update');
-      console.log('Controllo aggiornamenti...');
-      const update = await Updates.checkForUpdateAsync();
-      if (update.isAvailable) {
-        console.log('Aggiornamento disponibile, scaricamento in corso...');
-        await Updates.fetchUpdateAsync();
-        console.log('Aggiornamento scaricato, riavvio app...');
-        await Updates.reloadAsync();
+    if (!__DEV__) {
+      try {
+        setLoadingState('checking-update');
+        console.log('Controllo aggiornamenti...');
+        const update = await Updates.checkForUpdateAsync();
+        if (update.isAvailable) {
+          console.log('Aggiornamento disponibile, scaricamento in corso...');
+          await Updates.fetchUpdateAsync();
+          console.log('Aggiornamento scaricato, riavvio app...');
+          await Updates.reloadAsync();
+        }
+      } catch (error) {
+        console.error('Errore durante il controllo degli aggiornamenti:', error);
       }
-    } catch (error) {
-      console.error('Errore durante il controllo degli aggiornamenti:', error);
     }
-    pullOnStartup();
+    setLoadingState('syncing-db');
+    await pullOnStartup();
+    setLoadingState('ready');
   }
-
   // Pull automatico all'avvio dell'app
   const pullOnStartup = async () => {
     try {
@@ -82,7 +84,7 @@ export default function Layout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  }, 
+  },
   loadingContainer: {
     flex: 1,
     backgroundColor: '#F5F5F5',
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 20,
   },
-    loadingText: {
+  loadingText: {
     fontSize: 18,
     fontWeight: '600',
     color: '#2C5F2D',
