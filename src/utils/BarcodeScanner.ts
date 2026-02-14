@@ -41,10 +41,11 @@ export class BarcodeScanner {
     private static handleEAN13Standard(data: string, type: string): string | null {
         if (data.length === 13 && data.startsWith('2')) {
             const pesoStr = data.substring(7, 12);
-            const peso = parseInt(pesoStr);
+            const pesoGrammi = parseInt(pesoStr);
 
-            if (!isNaN(peso)) {
-                return peso.toString();
+            if (!isNaN(pesoGrammi)) {
+                const pesoKg = pesoGrammi / 1000;
+                return pesoKg.toFixed(3);
             }
         }
         return null;

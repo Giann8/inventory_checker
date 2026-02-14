@@ -81,7 +81,7 @@ const VociInput: React.FC<VociInputProps> = ({
             // Chiudi il modal dopo 1 secondo
             setTimeout(() => {
                 setShowBarcodeModal(false);
-            }, 1000);
+            }, 100);
         }
     };
 
