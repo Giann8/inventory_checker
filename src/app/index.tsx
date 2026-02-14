@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   countdownBanner: {
-    backgroundColor: theme.colors.success ?? '#4CAF50',
+    backgroundColor: '#4CAF50',
     paddingVertical: 8,
     paddingHorizontal: 16,
     alignItems: 'center',
